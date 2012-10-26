@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compress7Zip.cs" />
     <Compile Include="Expand7Zip.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

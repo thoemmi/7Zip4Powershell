@@ -15,8 +15,8 @@ namespace SevenZip4Powershell {
 
         protected override void EndProcessing() {
             var activity = String.Format("Extracting {0} to {1}", FileName, Directory);
+            var statusDescription = "Extracting";
 
-            string statusDescription = null;
             using (var extractor = new SevenZipExtractor(FileName)) {
                 extractor.Extracting += (sender, args) =>
                     WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = args.PercentDone });
@@ -24,11 +24,11 @@ namespace SevenZip4Powershell {
                     statusDescription = String.Format("Extracting {0}", args.FileInfo.FileName);
                     WriteObject(statusDescription);
                 };
-                extractor.ExtractionFinished += (sender, args) =>
-                                                WriteObject(String.Format("Extraction finished"));
                 extractor.ExtractArchive(Directory);
             }
+
             WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
+            WriteObject(String.Format("Extraction finished"));
         }
     }
 }
