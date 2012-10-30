@@ -4,7 +4,7 @@ using SevenZip;
 
 namespace SevenZip4Powershell {
     [Cmdlet(VerbsData.Compress, "7Zip")]
-    public class Compress7Zip : Cmdlet {
+    public class Compress7Zip : ThreadedCmdlet {
         public Compress7Zip() {
             Format = OutArchiveFormat.SevenZip;
             CompressionLevel = CompressionLevel.Normal;
@@ -28,29 +28,40 @@ namespace SevenZip4Powershell {
         [Parameter]
         public CompressionMethod CompressionMethod { get; set; }
 
-        protected override void EndProcessing() {
+        protected override CmdletWorker CreateWorker() {
+            return new CompressWorker(this);
+        }
 
-            var compressor = new SevenZipCompressor {
-                ArchiveFormat = Format, 
-                CompressionLevel = CompressionLevel, 
-                CompressionMethod = CompressionMethod
-            };
+        private class CompressWorker : CmdletWorker {
+            private readonly Compress7Zip _cmdlet;
 
-            var activity = String.Format("Compressing {0} to {1}", Directory, FileName);
-            var currentStatus = "Compressing";
-            compressor.FilesFound += (sender, args) => 
-                WriteObject(String.Format("{0} files found for compression", args.Value));
-            compressor.Compressing += (sender, args) => 
-                WriteProgress(new ProgressRecord(0, activity, currentStatus) { PercentComplete = args.PercentDone });
-            compressor.FileCompressionStarted += (sender, args) => {
-                currentStatus = String.Format("Compressing {0}", args.FileName);
-                WriteObject(String.Format("Compressing {0}", args.FileName));
-            };
+            public CompressWorker(Compress7Zip cmdlet) {
+                _cmdlet = cmdlet;
+            }
 
-            compressor.CompressDirectory(Directory, FileName);
+            public override void Execute() {
+                var compressor = new SevenZipCompressor {
+                    ArchiveFormat = _cmdlet.Format,
+                    CompressionLevel = _cmdlet.CompressionLevel,
+                    CompressionMethod = _cmdlet.CompressionMethod
+                };
 
-            WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
-            WriteObject("Compression finished");
+                var activity = String.Format("Compressing {0} to {1}", _cmdlet.Directory, _cmdlet.FileName);
+                var currentStatus = "Compressing";
+                compressor.FilesFound += (sender, args) =>
+                    Write(String.Format("{0} files found for compression", args.Value));
+                compressor.Compressing += (sender, args) =>
+                    WriteProgress(new ProgressRecord(0, activity, currentStatus) { PercentComplete = args.PercentDone });
+                compressor.FileCompressionStarted += (sender, args) => {
+                    currentStatus = String.Format("Compressing {0}", args.FileName);
+                    Write(String.Format("Compressing {0}", args.FileName));
+                };
+
+                compressor.CompressDirectory(_cmdlet.Directory, _cmdlet.FileName);
+
+                WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
+                Write("Compression finished");
+            }
         }
     }
 }
