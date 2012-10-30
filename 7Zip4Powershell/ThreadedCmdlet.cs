@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Management.Automation;
 using System.Threading;
 
@@ -16,9 +17,12 @@ namespace SevenZip4Powershell {
             _thread = StartBackgroundThread(worker);
 
             foreach (var o in queue.GetConsumingEnumerable()) {
-                var progress = o as ProgressRecord;
-                if (progress != null) {
-                    WriteProgress(progress);
+                var record = o as ProgressRecord;
+                var errorRecord = o as ErrorRecord;
+                if (record != null) {
+                    WriteProgress(record);
+                } else if (errorRecord != null) {
+                    WriteError(errorRecord);
                 } else {
                     WriteObject(o);
                 }
@@ -31,6 +35,8 @@ namespace SevenZip4Powershell {
             var thread = new Thread(() => {
                 try {
                     worker.Execute();
+                } catch (Exception ex) {
+                    worker.Queue.Add(new ErrorRecord(ex, "err01", ErrorCategory.NotSpecified, worker));
                 }
                 finally {
                     worker.Queue.CompleteAdding();
