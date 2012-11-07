@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Management.Automation;
 using SevenZip;
 
@@ -27,6 +28,9 @@ namespace SevenZip4Powershell {
             }
 
             public override void Execute() {
+                var path = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
+                SevenZipBase.SetLibraryPath(path);
+
                 var activity = String.Format("Extracting {0} to {1}", System.IO.Path.GetFileName(_filename), _directory);
                 var statusDescription = "Extracting";
 
