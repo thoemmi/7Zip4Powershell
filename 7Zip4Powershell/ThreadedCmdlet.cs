@@ -4,7 +4,7 @@ using System.Management.Automation;
 using System.Threading;
 
 namespace SevenZip4Powershell {
-    public abstract class ThreadedCmdlet : Cmdlet {
+    public abstract class ThreadedCmdlet : PSCmdlet {
         protected abstract CmdletWorker CreateWorker();
         private Thread _thread;
 
