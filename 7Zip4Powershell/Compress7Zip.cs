@@ -50,7 +50,10 @@ namespace SevenZip4Powershell {
                     CompressionMethod = _cmdlet.CompressionMethod
                 };
 
-                var activity = String.Format("Compressing {0} to {1}", _cmdlet.Directory, _cmdlet.FileName);
+                var directory = Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.Directory);
+                var fileName = Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.FileName);
+
+                var activity = String.Format("Compressing {0} to {1}", directory, fileName);
                 var currentStatus = "Compressing";
                 compressor.FilesFound += (sender, args) =>
                     Write(String.Format("{0} files found for compression", args.Value));
@@ -61,7 +64,7 @@ namespace SevenZip4Powershell {
                     Write(String.Format("Compressing {0}", args.FileName));
                 };
 
-                compressor.CompressDirectory(_cmdlet.Directory, _cmdlet.FileName);
+                compressor.CompressDirectory(directory, fileName);
 
                 WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
                 Write("Compression finished");
