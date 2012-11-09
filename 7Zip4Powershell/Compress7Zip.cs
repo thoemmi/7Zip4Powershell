@@ -58,6 +58,9 @@ namespace SevenZip4Powershell {
             }
 
             public override void Execute() {
+                var libraryPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(GetType().Assembly.Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
+                SevenZipBase.SetLibraryPath(libraryPath);
+
                 var compressor = new SevenZipCompressor {
                     ArchiveFormat = _cmdlet.Format,
                     CompressionLevel = _cmdlet.CompressionLevel,

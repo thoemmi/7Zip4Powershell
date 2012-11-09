@@ -26,6 +26,9 @@ namespace SevenZip4Powershell {
             }
 
             public override void Execute() {
+                var libraryPath = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
+                SevenZipBase.SetLibraryPath(libraryPath);
+
                 var targetPath = new FileInfo(Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.TargetPath)).FullName;
                 var archiveFileName = new FileInfo(Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.ArchiveFileName)).FullName;
 
