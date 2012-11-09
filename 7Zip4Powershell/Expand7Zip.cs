@@ -8,11 +8,11 @@ namespace SevenZip4Powershell {
     public class Expand7Zip : ThreadedCmdlet {
         [Parameter(Position = 0, Mandatory = true, HelpMessage = "The full file name of the archive")]
         [ValidateNotNullOrEmpty]
-        public string FileName { get; set; }
+        public string ArchiveFileName { get; set; }
 
         [Parameter(Position = 1, Mandatory = true, HelpMessage = "The target folder")]
         [ValidateNotNullOrEmpty]
-        public string Directory { get; set; }
+        public string TargetPath { get; set; }
 
         protected override CmdletWorker CreateWorker() {
             return new ExpandWorker(this);
@@ -26,23 +26,23 @@ namespace SevenZip4Powershell {
             }
 
             public override void Execute() {
-                var directory = Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.Directory);
-                var fileName = Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.FileName);
+                var targetPath = new FileInfo(Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.TargetPath)).FullName;
+                var archiveFileName = new FileInfo(Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.ArchiveFileName)).FullName;
 
-                var activity = String.Format("Extracting {0} to {1}", System.IO.Path.GetFileName(fileName), directory);
+                var activity = String.Format("Extracting {0} to {1}", System.IO.Path.GetFileName(archiveFileName), targetPath);
                 var statusDescription = "Extracting";
 
-                Write(String.Format("Extracting archive {0}", fileName));
+                Write(String.Format("Extracting archive {0}", archiveFileName));
                 WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = 0 });
 
-                using (var extractor = new SevenZipExtractor(fileName)) {
+                using (var extractor = new SevenZipExtractor(archiveFileName)) {
                     extractor.Extracting += (sender, args) =>
                                             WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = args.PercentDone });
                     extractor.FileExtractionStarted += (sender, args) => {
                         statusDescription = String.Format("Extracting file {0}", args.FileInfo.FileName);
                         Write(statusDescription);
                     };
-                    extractor.ExtractArchive(directory);
+                    extractor.ExtractArchive(targetPath);
                 }
 
                 WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
