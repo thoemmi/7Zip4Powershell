@@ -5,3 +5,5 @@ packages/
 _ReSharper*
 [Bb]in
 [Oo]bj
+
+*.nupkg

@@ -1,0 +1,1 @@
+.nuget\NuGet.exe pack 7Zip4Powershell\7Zip4Powershell.nuspec -tool -build -Properties Configuration=Release
