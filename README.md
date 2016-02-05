@@ -3,7 +3,7 @@
 
 Powershell module for creating and extracting 7-Zip archives supporting Powershell's WriteProgress API.
 
-![Screenshot](http://thomasfreudenberg.com/files/Fun-with-RavenDB_F113/7zip4powershell_thumb.png)
+![Screenshot](http://thomasfreudenberg.com/files/archive/7zip4powershell.png)
 
 The syntax is simple as this:
 
