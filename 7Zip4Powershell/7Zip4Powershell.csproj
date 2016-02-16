@@ -58,6 +58,9 @@
     <Compile Include="ThreadedCmdlet.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="7Zip4PowerShell.psd1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
