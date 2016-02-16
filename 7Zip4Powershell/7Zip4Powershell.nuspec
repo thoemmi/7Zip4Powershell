@@ -1,18 +1,19 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>7Zip4Powershell</id>
-    <version>1.0</version>
-    <title>7Zip4Powershell</title>
+    <id>7Zip4PowerShell</id>
+    <version>$version$</version>
+    <title>7Zip4PowerShell</title>
     <authors>Thomas Freudenberg</authors>
     <owners>Thomas Freudenberg</owners>
     <projectUrl>https://github.com/thoemmi/7Zip4Powershell</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Powershell module for creating and extracting 7-Zip archives</description>
-    <copyright>Copyright 2013</copyright>
+    <copyright>Copyright 2013-2016</copyright>
     <tags>7-Zip Powershell</tags>
   </metadata>
   <files>
-    <file src="bin\release\*.dll" target="tools"/>
+    <file src="bin\$configuration$\*.dll" target="tools"/>
+    <file src="bin\$configuration$\*.psd1" target="tools"/>
   </files>
 </package>
