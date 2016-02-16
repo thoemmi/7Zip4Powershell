@@ -5,7 +5,7 @@ using System.Linq;
 using System.Management.Automation;
 using SevenZip;
 
-namespace SevenZip4Powershell {
+namespace SevenZip4PowerShell {
     [Cmdlet(VerbsData.Compress, "7Zip")]
     public class Compress7Zip : ThreadedCmdlet {
         public Compress7Zip() {

@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "7Zip4Powershell", "7Zip4Powershell\7Zip4Powershell.csproj", "{8881C4DE-361E-4DAE-9106-A3586BF1806A}"
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "7Zip4PowerShell", "7Zip4Powershell\7Zip4PowerShell.csproj", "{8881C4DE-361E-4DAE-9106-A3586BF1806A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F0FB1C1F-F65D-4E5C-810F-A159A88D0EE9}"
 	ProjectSection(SolutionItems) = preProject
