@@ -58,9 +58,6 @@ namespace SevenZip4PowerShell {
             }
 
             public override void Execute() {
-                var libraryPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(GetType().Assembly.Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
-                SevenZipBase.SetLibraryPath(libraryPath);
-
                 var compressor = new SevenZipCompressor {
                     ArchiveFormat = _cmdlet.Format,
                     CompressionLevel = _cmdlet.CompressionLevel,
@@ -78,19 +75,19 @@ namespace SevenZip4PowerShell {
                 var archiveFileName = new FileInfo(System.IO.Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.ArchiveFileName)).FullName;
 
                 var activity = directoryOrFiles.Length > 1
-                    ? String.Format("Compressing {0} Files to {1}", directoryOrFiles.Length, archiveFileName)
-                    : String.Format("Compressing {0} to {1}", directoryOrFiles.First(), archiveFileName);
+                    ? $"Compressing {directoryOrFiles.Length} Files to {archiveFileName}"
+                    : $"Compressing {directoryOrFiles.First()} to {archiveFileName}";
 
                 var currentStatus = "Compressing";
                 compressor.FilesFound += (sender, args) =>
-                    Write(String.Format("{0} files found for compression", args.Value));
+                    Write($"{args.Value} files found for compression");
                 compressor.Compressing += (sender, args) =>
                     WriteProgress(new ProgressRecord(0, activity, currentStatus) { PercentComplete = args.PercentDone });
                 compressor.FileCompressionStarted += (sender, args) => {
-                    currentStatus = String.Format("Compressing {0}", args.FileName);
-                    Write(String.Format("Compressing {0}", args.FileName));
+                    currentStatus = $"Compressing {args.FileName}";
+                    Write($"Compressing {args.FileName}");
                 };
-                
+
                 if (directoryOrFiles.Any(path => new FileInfo(path).Exists)) {
                     var notFoundFiles = directoryOrFiles.Where(path => !new FileInfo(path).Exists).ToArray();
                     if (notFoundFiles.Any()) {
