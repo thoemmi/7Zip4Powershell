@@ -36,6 +36,9 @@ namespace SevenZip4PowerShell {
         [Parameter]
         public CompressionMethod CompressionMethod { get; set; }
 
+        [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipCompressor")]
+        public ScriptBlock CustomInitialization { get; set; }
+
         protected override void ProcessRecord() {
             base.ProcessRecord();
 
@@ -63,6 +66,7 @@ namespace SevenZip4PowerShell {
                     CompressionLevel = _cmdlet.CompressionLevel,
                     CompressionMethod = _cmdlet.CompressionMethod
                 };
+                _cmdlet.CustomInitialization?.Invoke(compressor);
 
                 if (_cmdlet._directoryOrFilesFromPipeline == null) {
                     _cmdlet._directoryOrFilesFromPipeline = new List<string> {

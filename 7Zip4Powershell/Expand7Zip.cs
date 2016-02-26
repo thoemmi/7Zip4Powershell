@@ -13,6 +13,9 @@ namespace SevenZip4PowerShell {
         [ValidateNotNullOrEmpty]
         public string TargetPath { get; set; }
 
+        [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipExtractor")]
+        public ScriptBlock CustomInitialization { get; set; }
+
         protected override CmdletWorker CreateWorker() {
             return new ExpandWorker(this);
         }
@@ -35,6 +38,8 @@ namespace SevenZip4PowerShell {
                 WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = 0 });
 
                 using (var extractor = new SevenZipExtractor(archiveFileName)) {
+                    _cmdlet.CustomInitialization?.Invoke(extractor);
+
                     extractor.Extracting += (sender, args) =>
                                             WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = args.PercentDone });
                     extractor.FileExtractionStarted += (sender, args) => {
