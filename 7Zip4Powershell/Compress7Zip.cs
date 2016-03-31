@@ -36,6 +36,9 @@ namespace SevenZip4PowerShell {
         [Parameter]
         public CompressionMethod CompressionMethod { get; set; }
 
+        [Parameter]
+        public string Password { get; set; }
+
         [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipCompressor")]
         public ScriptBlock CustomInitialization { get; set; }
 
@@ -59,6 +62,8 @@ namespace SevenZip4PowerShell {
             public CompressWorker(Compress7Zip cmdlet) {
                 _cmdlet = cmdlet;
             }
+
+            private bool HasPassword => !String.IsNullOrEmpty(_cmdlet.Password);
 
             public override void Execute() {
                 var compressor = new SevenZipCompressor {
@@ -97,16 +102,28 @@ namespace SevenZip4PowerShell {
                     if (notFoundFiles.Any()) {
                         throw new FileNotFoundException("File(s) not found: " + string.Join(", ", notFoundFiles));
                     }
-                    compressor.CompressFiles(archiveFileName, directoryOrFiles);
+                    if (HasPassword) {
+                        compressor.CompressFilesEncrypted(archiveFileName, _cmdlet.Password, directoryOrFiles);
+                    } else {
+                        compressor.CompressFiles(archiveFileName, directoryOrFiles);
+                    }
                 }
                 if (directoryOrFiles.Any(path => new DirectoryInfo(path).Exists)) {
                     if (directoryOrFiles.Length > 1) {
                         throw new ArgumentException("Only one directory allowed as input");
                     }
                     if (_cmdlet.Filter != null) {
-                        compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Filter, true);
+                        if (HasPassword) {
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password, _cmdlet.Filter, true);
+                        } else {
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Filter, true);
+                        }
                     } else {
-                        compressor.CompressDirectory(directoryOrFiles[0], archiveFileName);
+                        if (HasPassword) {
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password);
+                        } else {
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName);
+                        }
                     }
                 }
 
