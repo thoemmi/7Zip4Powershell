@@ -23,7 +23,7 @@
     </Task>
   </UsingTask>
 
-  <Target Name="CreateNugetPackage" AfterTargets="Compile">
+  <Target Name="CreateNugetPackage" AfterTargets="Build">
     <!--patch module version in .psd1 -->
     <ReplaceFileText
       InputFilename="7Zip4PowerShell.psd1"
