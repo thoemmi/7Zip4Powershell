@@ -12,6 +12,7 @@ The syntax is simple as this:
 Expand-7Zip
     [-ArchiveFileName] <string> 
     [-TargetPath] <string>  
+    [-Password <string>]
     [-CustomInitialization <ScriptBlock>]
     [<CommonParameters>]
  
@@ -21,7 +22,8 @@ Compress-7Zip
     [[-Filter] <string>] 
     [-Format <OutArchiveFormat> {SevenZip | Zip | GZip | BZip2 | Tar | XZ}] 
     [-CompressionLevel <CompressionLevel> {None | Fast | Low | Normal | High | Ultra}] 
-    [-CompressionMethod <CompressionMethod> {Copy | Deflate | Deflate64 | BZip2 | Lzma | Lzma2 | Ppmd | Default}] 
+    [-CompressionMethod <CompressionMethod> {Copy | Deflate | Deflate64 | BZip2 | Lzma | Lzma2 | Ppmd | Default}]
+    [-Password <string>]
     [-CustomInitialization <ScriptBlock>]
     [<CommonParameters>]
 ```
