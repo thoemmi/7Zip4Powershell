@@ -29,11 +29,11 @@
       InputFilename="7Zip4PowerShell.psd1"
       OutputFilename="bin\$(Configuration)\7Zip4PowerShell.psd1"
       MatchExpression="\$version\$"
-      ReplacementText="$(GitVersion_SemVer)" />
+      ReplacementText="$(GitVersion_MajorMinorPatch)" />
 
     <!-- create nuget package -->
     <Exec
-      Command="$(SolutionDir).nuget\NuGet.exe pack 7Zip4Powershell.nuspec -tool -build -Properties Configuration=$(Configuration) -OutputDirectory $(OutDir) -Version $(GitVersion_SemVer)"
+      Command="$(SolutionDir).nuget\NuGet.exe pack 7Zip4Powershell.nuspec -tool -build -Properties Configuration=$(Configuration) -OutputDirectory $(OutDir) -Version $(GitVersion_MajorMinorPatch)"
       />
   </Target>
 </Project>
