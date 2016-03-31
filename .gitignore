@@ -7,3 +7,4 @@ _ReSharper*
 [Oo]bj
 
 *.nupkg
+/.vs
