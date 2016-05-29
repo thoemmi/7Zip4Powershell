@@ -10,8 +10,7 @@ namespace SevenZip4PowerShell {
         private Thread _thread;
 
         protected override void EndProcessing() {
-            var libraryPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(GetType().Assembly.Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
-            SevenZipBase.SetLibraryPath(libraryPath);
+            SevenZipBase.SetLibraryPath(Utils.SevenZipLibraryPath);
 
             var queue = new BlockingCollection<object>();
             var worker = CreateWorker();

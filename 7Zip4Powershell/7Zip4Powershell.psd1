@@ -12,6 +12,7 @@ HelpInfoUri = "https://github.com/thoemmi/7Zip4Powershell"
 NestedModules = @("7Zip4PowerShell.dll")
 CmdletsToExport = @(
 	"Expand-7Zip",
-	"Compress-7Zip"
+	"Compress-7Zip",
+	"Get-7Zip"
 )
 }
