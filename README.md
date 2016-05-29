@@ -26,6 +26,11 @@ Compress-7Zip
     [-Password <string>]
     [-CustomInitialization <ScriptBlock>]
     [<CommonParameters>]
+
+Get-7Zip
+    [-ArchiveFileName] <string> 
+    [-Password <string>]
+    [<CommonParameters>]
 ```
 
 It works with both x86 and x64 and uses [SevenZipSharp](https://sevenzipsharp.codeplex.com/) as a wrapper around 7zip’s API.
@@ -34,6 +39,8 @@ It works with both x86 and x64 and uses [SevenZipSharp](https://sevenzipsharp.co
 
 7Zip4Powershell is published [as a NuGet package](https://nuget.org/packages/7Zip4Powershell/) and [at PowerShell Gallery](https://www.powershellgallery.com/packages/7Zip4Powershell).
 
+[![NuGet](https://img.shields.io/nuget/v/7Zip4Powershell.svg?maxAge=2592000)](https://nuget.org/packages/7Zip4Powershell/)
+[![https://www.powershellgallery.com/packages/7Zip4Powershell](https://img.shields.io/badge/PowerShell%20Gallery-download-blue.svg)](https://www.powershellgallery.com/packages/7Zip4Powershell)
 
 ## Customization
 
