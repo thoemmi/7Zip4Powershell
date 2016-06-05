@@ -25,6 +25,7 @@ Compress-7Zip
     [-CompressionMethod <CompressionMethod> {Copy | Deflate | Deflate64 | BZip2 | Lzma | Lzma2 | Ppmd | Default}]
     [-Password <string>]
     [-CustomInitialization <ScriptBlock>]
+    [-EncryptFilenames]
     [<CommonParameters>]
 
 Get-7Zip

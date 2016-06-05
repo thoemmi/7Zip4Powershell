@@ -42,6 +42,22 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipCompressor")]
         public ScriptBlock CustomInitialization { get; set; }
 
+        [Parameter(HelpMessage = "Enables encrypting filenames when using the 7z format")]
+        public SwitchParameter EncryptFilenames { get; set; }
+
+        protected override void BeginProcessing() {
+            base.BeginProcessing();
+
+            if (EncryptFilenames.IsPresent) {
+                if (Format != OutArchiveFormat.SevenZip) {
+                    throw new ArgumentException("Encrypting filenames is supported for 7z format only.");
+                }
+                if (string.IsNullOrEmpty(Password)) {
+                    throw new ArgumentException("Encrypting filenames is supported only when using a password.");
+                }
+            }
+        }
+
         protected override void ProcessRecord() {
             base.ProcessRecord();
 
@@ -71,6 +87,12 @@ namespace SevenZip4PowerShell {
                     CompressionLevel = _cmdlet.CompressionLevel,
                     CompressionMethod = _cmdlet.CompressionMethod
                 };
+
+                if (_cmdlet.EncryptFilenames.IsPresent) {
+                    // enable header encryption, see https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm#HeaderEncrypt
+                    compressor.CustomParameters.Add("he", "on");
+                }
+
                 _cmdlet.CustomInitialization?.Invoke(compressor);
 
                 if (_cmdlet._directoryOrFilesFromPipeline == null) {
