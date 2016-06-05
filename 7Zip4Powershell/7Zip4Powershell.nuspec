@@ -15,7 +15,7 @@
     <tags>powershell 7zip 7-zip zip archive extract compress</tags>
   </metadata>
   <files>
-    <file src="bin\$configuration$\*.dll" target="tools"/>
+    <file src="bin\$configuration$\*.dll" target="tools" exclude="**\JetBrains.*"/>
     <file src="bin\$configuration$\*.psd1" target="tools"/>
   </files>
 </package>

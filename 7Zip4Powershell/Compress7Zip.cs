@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using JetBrains.Annotations;
 using SevenZip;
 
 namespace SevenZip4PowerShell {
     [Cmdlet(VerbsData.Compress, "7Zip")]
+    [PublicAPI]
     public class Compress7Zip : ThreadedCmdlet {
-        public Compress7Zip() {
-            Format = OutArchiveFormat.SevenZip;
-            CompressionLevel = CompressionLevel.Normal;
-            CompressionMethod = CompressionMethod.Ppmd;
-        }
-
         [Parameter(Position = 0, Mandatory = true, HelpMessage = "The full file name of the archive")]
         [ValidateNotNullOrEmpty]
         public string ArchiveFileName { get; set; }
@@ -28,13 +24,13 @@ namespace SevenZip4PowerShell {
         private List<string> _directoryOrFilesFromPipeline;
 
         [Parameter]
-        public OutArchiveFormat Format { get; set; }
+        public OutArchiveFormat Format { get; set; } = OutArchiveFormat.SevenZip;
 
         [Parameter]
-        public CompressionLevel CompressionLevel { get; set; }
+        public CompressionLevel CompressionLevel { get; set; } = CompressionLevel.Normal;
 
         [Parameter]
-        public CompressionMethod CompressionMethod { get; set; }
+        public CompressionMethod CompressionMethod { get; set; } = CompressionMethod.Ppmd;
 
         [Parameter]
         public string Password { get; set; }

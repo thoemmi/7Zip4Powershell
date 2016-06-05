@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using System.Management.Automation;
+using JetBrains.Annotations;
 using SevenZip;
 
 namespace SevenZip4PowerShell {
     [Cmdlet(VerbsCommon.Get, "7Zip")]
+    [PublicAPI]
     public class Get7Zip : PSCmdlet {
         [Parameter(Position = 0, Mandatory = true, HelpMessage = "The full file name of the archive")]
         [ValidateNotNullOrEmpty]
@@ -18,7 +20,7 @@ namespace SevenZip4PowerShell {
 
         protected override void ProcessRecord() {
             var archiveFileName =
-                new FileInfo(Path.Combine(this.SessionState.Path.CurrentFileSystemLocation.Path, this.ArchiveFileName)).FullName;
+                new FileInfo(Path.Combine(SessionState.Path.CurrentFileSystemLocation.Path, this.ArchiveFileName)).FullName;
 
             WriteVerbose($"Getting archive data {archiveFileName}");
 

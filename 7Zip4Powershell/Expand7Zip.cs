@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using System.Management.Automation;
+using JetBrains.Annotations;
 using SevenZip;
 
 namespace SevenZip4PowerShell {
     [Cmdlet(VerbsData.Expand, "7Zip")]
+    [PublicAPI]
     public class Expand7Zip : ThreadedCmdlet {
         [Parameter(Position = 0, Mandatory = true, HelpMessage = "The full file name of the archive")]
         [ValidateNotNullOrEmpty]
