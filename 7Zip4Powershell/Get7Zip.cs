@@ -9,6 +9,9 @@ namespace SevenZip4PowerShell {
         [ValidateNotNullOrEmpty]
         public string ArchiveFileName { get; set; }
 
+        [Parameter]
+        public string Password { get; set; }
+
         protected override void BeginProcessing() {
             SevenZipBase.SetLibraryPath(Utils.SevenZipLibraryPath);
         }
@@ -19,8 +22,14 @@ namespace SevenZip4PowerShell {
 
             WriteVerbose($"Getting archive data {archiveFileName}");
 
+            SevenZipExtractor extractor;
+            if (!string.IsNullOrEmpty(Password)) {
+                extractor = new SevenZipExtractor(archiveFileName, Password);
+            } else {
+                extractor = new SevenZipExtractor(archiveFileName);
+            }
 
-            using (var extractor = new SevenZipExtractor(archiveFileName)) {
+            using (extractor) {
                 foreach (var file in extractor.ArchiveFileData) {
                     WriteObject(new PSObject(file));
                 }
