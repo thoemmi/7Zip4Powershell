@@ -58,3 +58,13 @@ Compress-7Zip -Path . -ArchiveFileName demo.7z -CustomInitialization $initScript
 ```
 
 A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm).
+
+## Motivation
+
+I've written and maintaining the module just for fun and to serve my own needs. If
+it's useful for you too, that's great. I don't demand anything in return. 
+
+However, if you like this module and feel the urge to give something back, a coffee 
+or a beer is always appreciated. Thank you very much in advance.
+
+[![PayPal.me](https://img.shields.io/badge/PayPal-me-blue.svg?maxAge=2592000)](https://www.paypal.me/ThomasFreudenberg)
