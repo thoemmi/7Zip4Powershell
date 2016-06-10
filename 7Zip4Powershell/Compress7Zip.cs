@@ -30,7 +30,7 @@ namespace SevenZip4PowerShell {
         public CompressionLevel CompressionLevel { get; set; } = CompressionLevel.Normal;
 
         [Parameter]
-        public CompressionMethod CompressionMethod { get; set; } = CompressionMethod.Ppmd;
+        public CompressionMethod CompressionMethod { get; set; } = CompressionMethod.Default;
 
         [Parameter]
         public string Password { get; set; }
