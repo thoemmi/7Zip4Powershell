@@ -13,6 +13,7 @@ NestedModules = @("7Zip4PowerShell.dll")
 CmdletsToExport = @(
 	"Expand-7Zip",
 	"Compress-7Zip",
-	"Get-7Zip"
+	"Get-7Zip",
+	"Get-7ZipInformation"
 )
 }
