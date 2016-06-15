@@ -84,10 +84,7 @@ namespace SevenZip4PowerShell {
                     CompressionMethod = _cmdlet.CompressionMethod
                 };
 
-                if (_cmdlet.EncryptFilenames.IsPresent) {
-                    // enable header encryption, see https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm#HeaderEncrypt
-                    compressor.CustomParameters.Add("he", "on");
-                }
+                compressor.EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent;
 
                 _cmdlet.CustomInitialization?.Invoke(compressor);
 
