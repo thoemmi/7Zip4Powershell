@@ -7,7 +7,7 @@ namespace SevenZip4PowerShell {
     [Cmdlet(VerbsCommon.Get, "7Zip")]
     [PublicAPI]
     public class Get7Zip : PSCmdlet {
-        [Parameter(Position = 0, Mandatory = true, HelpMessage = "The full file name of the archive")]
+        [Parameter(Position = 0, ValueFromPipeline = true, Mandatory = true, HelpMessage = "The full file name of the archive")]
         [ValidateNotNullOrEmpty]
         public string ArchiveFileName { get; set; }
 
