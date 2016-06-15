@@ -29,7 +29,7 @@ Compress-7Zip
     [<CommonParameters>]
 
 Get-7Zip
-    [-ArchiveFileName] <string> 
+    [-ArchiveFileName] <string[]>
     [-Password <string>]
     [<CommonParameters>]
 

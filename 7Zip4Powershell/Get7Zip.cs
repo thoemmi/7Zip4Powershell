@@ -20,7 +20,7 @@ namespace SevenZip4PowerShell {
         }
 
         protected override void ProcessRecord() {
-            foreach (var archiveFileName in ArchiveFileName.Select(_ => Path.Combine(SessionState.Path.CurrentFileSystemLocation.Path, _))) {
+            foreach (var archiveFileName in ArchiveFileName.Select(_ => Path.GetFullPath(Path.Combine(SessionState.Path.CurrentFileSystemLocation.Path, _)))) {
 
                 WriteVerbose($"Getting archive data {archiveFileName}");
 
