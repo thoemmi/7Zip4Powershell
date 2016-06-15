@@ -25,6 +25,8 @@ namespace SevenZip4PowerShell {
                     WriteProgress(record);
                 } else if (errorRecord != null) {
                     WriteError(errorRecord);
+                } else if (o is string) {
+                    WriteVerbose((string) o);
                 } else {
                     WriteObject(o);
                 }
