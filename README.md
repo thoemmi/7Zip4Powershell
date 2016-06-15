@@ -15,7 +15,7 @@ Expand-7Zip
     [-Password <string>]
     [-CustomInitialization <ScriptBlock>]
     [<CommonParameters>]
- 
+
 Compress-7Zip
     [-ArchiveFileName] <string> 
     [-Path] <string> 
@@ -30,6 +30,11 @@ Compress-7Zip
 
 Get-7Zip
     [-ArchiveFileName] <string> 
+    [-Password <string>]
+    [<CommonParameters>]
+
+Get-7ZipInformation
+    [-ArchiveFileName] <string[]> 
     [-Password <string>]
     [<CommonParameters>]
 ```

@@ -61,6 +61,7 @@
     <Compile Include="Compress7Zip.cs" />
     <Compile Include="Expand7Zip.cs" />
     <Compile Include="Get7Zip.cs" />
+    <Compile Include="Get7ZipInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThreadedCmdlet.cs" />
     <Compile Include="Utils.cs" />
