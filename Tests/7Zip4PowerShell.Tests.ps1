@@ -98,6 +98,16 @@ Describe "How Compress-7Zip Compresses Files" {
         Get-Item .\TestFiles\ALL-64.zip | Should Exist
     } 
 
+    It "Encrypts DDD.txt using SevenZip+LZMA2+AES to PlainFileNames.7z" {
+        Compress-7Zip -Path .\TestFiles\DDD.txt -ArchiveFileName .\TestFiles\PlainFileNames.7z -Format SevenZip -Password "DasP@sswurd" -ErrorAction Stop | Out-Null
+        Get-Item .\TestFiles\PlainFileNames.7z | Should Exist
+    } 
+
+    It "Encrypts DDD.txt using SevenZip+LZMA2+AES to EncryptedFileNames.7z" {
+        Compress-7Zip -Path .\TestFiles\DDD.txt -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -Format SevenZip -Password "DasP@sswurd" -EncryptFilenames -ErrorAction Stop | Out-Null
+        Get-Item .\TestFiles\EncryptedFileNames.7z | Should Exist
+    } 
+
 }
 
 
@@ -146,6 +156,35 @@ Describe "How Get-7Zip Shows Archive Details" {
         $x.Count -gt 2 | Should Be $True
         $x = $null
     }
+
+    It "Reads PlainFileNames.7z with Correct Password" {
+        Get-7Zip -ArchiveFileName .\TestFiles\PlainFileNames.7z -Password "DasP@sswurd" -ErrorAction Stop |
+        Select-Object -ExpandProperty FileName | Should Be "DDD.txt"
+    }
+
+    It "Reads PlainFileNames.7z with Incorrect Password" {
+        Get-7Zip -ArchiveFileName .\TestFiles\PlainFileNames.7z -Password "WrongPassword" -ErrorAction Stop |
+        Select-Object -ExpandProperty FileName | Should Be "DDD.txt"
+    }
+
+    It "Reads PlainFileNames.7z with No Password" {
+        Get-7Zip -ArchiveFileName .\TestFiles\PlainFileNames.7z -ErrorAction Stop |
+        Select-Object -ExpandProperty FileName | Should Be "DDD.txt"
+    }
+
+    It "Reads EncryptedFileNames.7z with Correct Password" {
+        Get-7Zip -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -Password "DasP@sswurd" -ErrorAction Stop |
+        Select-Object -ExpandProperty FileName | Should Be "DDD.txt"
+    }
+
+    It "Fails to read EncryptedFileNames.7z with Incorrect Password" {
+        { Get-7Zip -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -Password "WrongPassword" } | Should Throw
+    }
+
+    It "Fails to read EncryptedFileNames.7z with No Password" {
+        { Get-7Zip -ArchiveFileName .\TestFiles\EncryptedFileNames.7z } | Should Throw
+    }
+
 }
 
 
@@ -243,6 +282,35 @@ Describe "How Get-7ZipInformation Shows Archive Details" {
         $x.FilesCount -gt 2 | Should Be $True
         $x = $null
     }
+
+    It "Reads PlainFileNames.7z with Correct Password" {
+        Get-7ZipInformation -ArchiveFileName .\TestFiles\PlainFileNames.7z -Password "DasP@sswurd" -ErrorAction Stop |
+        Select-Object -ExpandProperty Method | Should BeLike "*AES"
+    }
+
+    It "Reads PlainFileNames.7z with Incorrect Password" {
+        Get-7ZipInformation -ArchiveFileName .\TestFiles\PlainFileNames.7z -Password "WrongPassword" -ErrorAction Stop |
+        Select-Object -ExpandProperty Method | Should BeLike "*AES"
+    }
+
+    It "Reads PlainFileNames.7z with No Password" {
+        Get-7ZipInformation -ArchiveFileName .\TestFiles\PlainFileNames.7z -ErrorAction Stop |
+        Select-Object -ExpandProperty Method | Should BeLike "*AES"
+    }
+
+    It "Reads EncryptedFileNames.7z with Correct Password" {
+        Get-7ZipInformation -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -Password "DasP@sswurd" -ErrorAction Stop |
+        Select-Object -ExpandProperty Method | Should BeLike "*AES"
+    }
+
+    It "Fails to read EncryptedFileNames.7z with Incorrect Password" {
+        { Get-7ZipInformation -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -Password "WrongPassword" } | Should Throw
+    }
+
+    It "Fails to read EncryptedFileNames.7z with No Password" {
+        { Get-7ZipInformation -ArchiveFileName .\TestFiles\EncryptedFileNames.7z } | Should Throw
+    }
+
 }
 
 
@@ -284,6 +352,51 @@ Describe "How Expand-7Zip Decompresses Archives" {
         (dir .\TestFiles\*.txt).count -gt 2 | Should Be $true
     }
 
+    It "Expands PlainFileNames.7z with Correct Password" {
+        del .\TestFiles\DDD.txt -ErrorAction SilentlyContinue
+        Expand-7Zip -ArchiveFileName .\TestFiles\PlainFileNames.7z -TargetPath .\TestFiles -Password "DasP@sswurd" -ErrorAction Stop
+        Get-Item -Path .\TestFiles\DDD.txt -ErrorAction Stop | Should Exist 
+        Get-Content -Path .\TestFiles\DDD.txt | Should BeLike "*DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD*"
+    }
+
+    It "Expands EncryptedFileNames.7z with Correct Password" {
+        del .\TestFiles\DDD.txt -ErrorAction SilentlyContinue
+        Expand-7Zip -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -TargetPath .\TestFiles -Password "DasP@sswurd" -ErrorAction Stop
+        Get-Item -Path .\TestFiles\DDD.txt -ErrorAction Stop | Should Exist 
+        Get-Content -Path .\TestFiles\DDD.txt | Should BeLike "*DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD*"
+    }
+
+    It "Fails to expand PlainFileNames.7z with Incorrect Password" {
+        del .\TestFiles\DDD.txt -ErrorAction SilentlyContinue
+        ## Pester doesn't catch the following exception, not sure if this is module's or Pester's fault:
+        #{ Expand-7Zip -ArchiveFileName .\TestFiles\PlainFileNames.7z -TargetPath .\TestFiles -Password "WrongPassword" -ErrorAction SilentlyContinue } | Should Throw 
+        Expand-7Zip -ArchiveFileName .\TestFiles\PlainFileNames.7z -TargetPath .\TestFiles -Password "WrongPassword" -ErrorAction SilentlyContinue
+        $pwd.path + "\TestFiles\DDD.txt" | Should Not Exist  
+    }
+
+    It "Fails to expand PlainFileNames.7z with No Password" {
+        del .\TestFiles\DDD.txt -ErrorAction SilentlyContinue
+        ## Pester doesn't catch the following exception, not sure if this is module's or Pester's fault:
+        #{ Expand-7Zip -ArchiveFileName .\TestFiles\PlainFileNames.7z -TargetPath .\TestFiles -ErrorAction SilentlyContinue } | Should Throw 
+        Expand-7Zip -ArchiveFileName .\TestFiles\PlainFileNames.7z -TargetPath .\TestFiles -ErrorAction SilentlyContinue
+        $pwd.path + "\TestFiles\DDD.txt" | Should Not Exist  
+    }
+
+    It "Fails to expand EncryptedFileNames.7z with Incorrect Password" {
+        del .\TestFiles\DDD.txt -ErrorAction SilentlyContinue
+        ## Pester doesn't catch the following exception, not sure if this is module's or Pester's fault:
+        #{ Expand-7Zip -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -TargetPath .\TestFiles -Password "WrongPassword" -ErrorAction SilentlyContinue } | Should Throw 
+        Expand-7Zip -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -TargetPath .\TestFiles -Password "WrongPassword" -ErrorAction SilentlyContinue
+        $pwd.path + "\TestFiles\DDD.txt" | Should Not Exist 
+    }
+
+    It "Fails to expand EncryptedFileNames.7z with No Password" {
+        del .\TestFiles\DDD.txt -ErrorAction SilentlyContinue
+        ## Pester doesn't catch the following exception, not sure if this is module's or Pester's fault:
+        #{ Expand-7Zip -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -TargetPath .\TestFiles } | Should Throw 
+        Expand-7Zip -ArchiveFileName .\TestFiles\EncryptedFileNames.7z -TargetPath .\TestFiles -ErrorAction SilentlyContinue
+        $pwd.path + "\TestFiles\DDD.txt" | Should Not Exist 
+    }
 
 }
 
