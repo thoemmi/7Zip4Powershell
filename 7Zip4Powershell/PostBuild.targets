@@ -34,7 +34,7 @@
     <!-- create nuget package -->
     <Exec
       WorkingDirectory="$(SolutionDir)"
-      Command=".nuget\NuGet.exe pack 7Zip4Powershell.nuspec -tool -build -Properties Configuration=$(Configuration) -OutputDirectory $(OutDir) -Version $(GitVersion_MajorMinorPatch)"
+      Command=".nuget\NuGet.exe pack 7Zip4Powershell\7Zip4Powershell.nuspec -tool -build -Properties Configuration=$(Configuration) -OutputDirectory $(OutDir) -Version $(GitVersion_MajorMinorPatch)"
       />
   </Target>
 </Project>
