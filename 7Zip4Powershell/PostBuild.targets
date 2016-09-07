@@ -23,7 +23,7 @@
     </Task>
   </UsingTask>
 
-  <Target Name="CreateNugetPackage" AfterTargets="Build">
+  <Target Name="CreateNugetPackage" AfterTargets="Build" Condition="'$(GitVersion_MajorMinorPatch)' != ''">
     <!--patch module version in .psd1 -->
     <ReplaceFileText
       InputFilename="7Zip4PowerShell.psd1"
@@ -33,7 +33,8 @@
 
     <!-- create nuget package -->
     <Exec
-      Command="$(SolutionDir).nuget\NuGet.exe pack 7Zip4Powershell.nuspec -tool -build -Properties Configuration=$(Configuration) -OutputDirectory $(OutDir) -Version $(GitVersion_MajorMinorPatch)"
+      WorkingDirectory="$(SolutionDir)\7Zip4Powershell"
+      Command="..\.nuget\NuGet.exe pack 7Zip4Powershell.nuspec -tool -build -Properties Configuration=$(Configuration) -OutputDirectory $(OutDir) -Version $(GitVersion_MajorMinorPatch)"
       />
   </Target>
 </Project>
