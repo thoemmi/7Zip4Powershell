@@ -30,10 +30,10 @@
       OutputFilename="bin\$(Configuration)\7Zip4PowerShell.psd1"
       MatchExpression="\$version\$"
       ReplacementText="$(GitVersion_MajorMinorPatch)" />
-
+	  
     <!-- create nuget package -->
     <Exec
-      Command="$(SolutionDir).nuget\NuGet.exe pack 7Zip4Powershell.nuspec -tool -build -Properties Configuration=$(Configuration) -OutputDirectory $(OutDir) -Version $(GitVersion_MajorMinorPatch)"
+      Command="&quot;$(SolutionDir).nuget\NuGet.exe&quot; pack 7Zip4Powershell.nuspec -tool -build -Properties Configuration=$(Configuration) -OutputDirectory &quot;$(OutDir.TrimEnd('\'))&quot; -Version $(GitVersion_MajorMinorPatch)"
       />
   </Target>
 </Project>
