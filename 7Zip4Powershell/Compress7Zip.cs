@@ -7,6 +7,16 @@ using JetBrains.Annotations;
 using SevenZip;
 
 namespace SevenZip4PowerShell {
+    public enum OutputFormat {
+        Auto,
+        SevenZip,
+        Zip,
+        GZip,
+        BZip2,
+        Tar,
+        XZ
+    }
+
     [Cmdlet(VerbsData.Compress, "7Zip")]
     [PublicAPI]
     public class Compress7Zip : ThreadedCmdlet {
@@ -24,7 +34,7 @@ namespace SevenZip4PowerShell {
         private List<string> _directoryOrFilesFromPipeline;
 
         [Parameter]
-        public OutArchiveFormat Format { get; set; } = OutArchiveFormat.SevenZip;
+        public OutputFormat Format { get; set; } = OutputFormat.Auto;
 
         [Parameter]
         public CompressionLevel CompressionLevel { get; set; } = CompressionLevel.Normal;
@@ -41,16 +51,54 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Enables encrypting filenames when using the 7z format")]
         public SwitchParameter EncryptFilenames { get; set; }
 
+        private OutArchiveFormat _inferredOutArchiveFormat;
+
         protected override void BeginProcessing() {
             base.BeginProcessing();
 
+            _inferredOutArchiveFormat = GetInferredOutArchiveFormat();
+
             if (EncryptFilenames.IsPresent) {
-                if (Format != OutArchiveFormat.SevenZip) {
+                if (_inferredOutArchiveFormat != OutArchiveFormat.SevenZip) {
                     throw new ArgumentException("Encrypting filenames is supported for 7z format only.");
                 }
                 if (string.IsNullOrEmpty(Password)) {
                     throw new ArgumentException("Encrypting filenames is supported only when using a password.");
                 }
+            }
+        }
+
+        private OutArchiveFormat GetInferredOutArchiveFormat() {
+            switch (Format) {
+                case OutputFormat.Auto:
+                    switch (System.IO.Path.GetExtension(ArchiveFileName).ToLowerInvariant()) {
+                        case ".zip":
+                            return OutArchiveFormat.Zip;
+                        case ".gz":
+                            return OutArchiveFormat.GZip;
+                        case ".bz2":
+                            return OutArchiveFormat.BZip2;
+                        case ".tar":
+                            return OutArchiveFormat.Tar;
+                        case ".xz":
+                            return OutArchiveFormat.XZ;
+                        default:
+                            return OutArchiveFormat.SevenZip;
+                    }
+                case OutputFormat.SevenZip:
+                    return OutArchiveFormat.SevenZip;
+                case OutputFormat.Zip:
+                    return OutArchiveFormat.Zip;
+                case OutputFormat.GZip:
+                    return OutArchiveFormat.GZip;
+                case OutputFormat.BZip2:
+                    return OutArchiveFormat.BZip2;
+                case OutputFormat.Tar:
+                    return OutArchiveFormat.Tar;
+                case OutputFormat.XZ:
+                    return OutArchiveFormat.XZ;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -79,7 +127,7 @@ namespace SevenZip4PowerShell {
 
             public override void Execute() {
                 var compressor = new SevenZipCompressor {
-                    ArchiveFormat = _cmdlet.Format,
+                    ArchiveFormat = _cmdlet._inferredOutArchiveFormat,
                     CompressionLevel = _cmdlet.CompressionLevel,
                     CompressionMethod = _cmdlet.CompressionMethod
                 };
