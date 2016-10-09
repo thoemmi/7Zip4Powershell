@@ -20,7 +20,7 @@ Compress-7Zip
     [-ArchiveFileName] <string> 
     [-Path] <string> 
     [[-Filter] <string>] 
-    [-Format <OutArchiveFormat> {SevenZip | Zip | GZip | BZip2 | Tar | XZ}] 
+    [-Format <OutputFormat> {Auto | SevenZip | Zip | GZip | BZip2 | Tar | XZ}] 
     [-CompressionLevel <CompressionLevel> {None | Fast | Low | Normal | High | Ultra}] 
     [-CompressionMethod <CompressionMethod> {Copy | Deflate | Deflate64 | BZip2 | Lzma | Lzma2 | Ppmd | Default}]
     [-Password <string>]
