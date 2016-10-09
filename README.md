@@ -26,6 +26,7 @@ Compress-7Zip
     [-Password <string>]
     [-CustomInitialization <ScriptBlock>]
     [-EncryptFilenames]
+    [-VolumeSize <int>]
     [<CommonParameters>]
 
 Get-7Zip
