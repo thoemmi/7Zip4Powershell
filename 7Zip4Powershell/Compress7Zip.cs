@@ -57,6 +57,9 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Specifies the volume sizes in bytes, 0 for no volumes")]
         public int VolumeSize { get; set; }
 
+        [Parameter(HelpMessage = "Disables preservation of empty directories")]
+        public SwitchParameter SkipEmptyDirectories { get; set; }
+
         private OutArchiveFormat _inferredOutArchiveFormat;
 
         protected override void BeginProcessing() {
@@ -138,7 +141,8 @@ namespace SevenZip4PowerShell {
                     CompressionMethod = _cmdlet.CompressionMethod,
                     VolumeSize = _cmdlet.VolumeSize,
                     EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent,
-                    DirectoryStructure = !_cmdlet.FlattenDirectoryStructure.IsPresent
+                    DirectoryStructure = !_cmdlet.FlattenDirectoryStructure.IsPresent,
+                    IncludeEmptyDirectories = !_cmdlet.SkipEmptyDirectories.IsPresent
                 };
 
                 _cmdlet.CustomInitialization?.Invoke(compressor);
