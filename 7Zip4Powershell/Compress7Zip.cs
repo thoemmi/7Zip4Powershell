@@ -51,6 +51,9 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Enables encrypting filenames when using the 7z format")]
         public SwitchParameter EncryptFilenames { get; set; }
 
+        [Parameter(HelpMessage = "Disables preservation of directory structure")]
+        public SwitchParameter FlattenDirectoryStructure { get; set; }
+
         private OutArchiveFormat _inferredOutArchiveFormat;
 
         protected override void BeginProcessing() {
@@ -129,7 +132,8 @@ namespace SevenZip4PowerShell {
                 var compressor = new SevenZipCompressor {
                     ArchiveFormat = _cmdlet._inferredOutArchiveFormat,
                     CompressionLevel = _cmdlet.CompressionLevel,
-                    CompressionMethod = _cmdlet.CompressionMethod
+                    CompressionMethod = _cmdlet.CompressionMethod,
+                    DirectoryStructure = !_cmdlet.FlattenDirectoryStructure.IsPresent
                 };
 
                 compressor.EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent;
