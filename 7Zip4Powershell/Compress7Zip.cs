@@ -43,6 +43,9 @@ namespace SevenZip4PowerShell {
         public CompressionMethod CompressionMethod { get; set; } = CompressionMethod.Default;
 
         [Parameter]
+        public CompressionMode CompressionMode { get; set; } = CompressionMode.Create;
+
+        [Parameter]
         public string Password { get; set; }
 
         [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipCompressor")]
@@ -129,7 +132,8 @@ namespace SevenZip4PowerShell {
                 var compressor = new SevenZipCompressor {
                     ArchiveFormat = _cmdlet._inferredOutArchiveFormat,
                     CompressionLevel = _cmdlet.CompressionLevel,
-                    CompressionMethod = _cmdlet.CompressionMethod
+                    CompressionMethod = _cmdlet.CompressionMethod,
+                    CompressionMode = _cmdlet.CompressionMode
                 };
 
                 compressor.EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent;
