@@ -51,6 +51,9 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Enables encrypting filenames when using the 7z format")]
         public SwitchParameter EncryptFilenames { get; set; }
 
+        [Parameter(HelpMessage = "Disables recursive files search")]
+        public SwitchParameter DisableRecursion { get; set; }
+
         private OutArchiveFormat _inferredOutArchiveFormat;
 
         protected override void BeginProcessing() {
@@ -134,6 +137,8 @@ namespace SevenZip4PowerShell {
 
                 compressor.EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent;
 
+                var recursion = !_cmdlet.DisableRecursion.IsPresent;
+
                 _cmdlet.CustomInitialization?.Invoke(compressor);
 
                 if (_cmdlet._directoryOrFilesFromPipeline == null) {
@@ -177,15 +182,15 @@ namespace SevenZip4PowerShell {
                     }
                     if (_cmdlet.Filter != null) {
                         if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password, _cmdlet.Filter, true);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password, _cmdlet.Filter, recursion);
                         } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Filter, true);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Filter, recursion);
                         }
                     } else {
                         if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password, recursion);
                         } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion);
                         }
                     }
                 }
