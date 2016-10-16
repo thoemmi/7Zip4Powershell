@@ -68,6 +68,36 @@ Compress-7Zip -Path . -ArchiveFileName demo.7z -CustomInitialization $initScript
 
 A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm).
 
+## Changelog
+
+### [v1.6](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.6)
+
+June 15, 2016
+
+* added `Get-7ZipInformation` cmdlet
+* use default compression method in `Compress-7Zip` (previously it was PPMd, for whatever reason) (#11)
+* allow piped input for `Get-7Zip` (#15)
+* use `WriteDebug` instead of `Write` of logging (#13)
+
+
+### [v1.5](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.5)
+
+June 5, 2016
+
+* Added parameter `-EncryptFilenames` to `Compress-7Zip` (#10, requested by @JasonFossen)
+
+### [v1.4](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.4)
+
+May 29, 2016
+
+* Added `Get-7Zip` to get a list of files in an archive (#9, contributed by @gigi81)
+
+### [v1.3](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.3)
+
+30 March, 2016
+
+* Added `Password` parameter to both `Compress-7Zip` and `Expand-7Zip` (#8)
+  
 ## Motivation
 
 I've written and maintaining the module just for fun and to serve my own needs. If
