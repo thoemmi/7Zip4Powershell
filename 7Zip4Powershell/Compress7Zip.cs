@@ -63,6 +63,9 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Disables recursive files search")]
         public SwitchParameter DisableRecursion { get; set; }
 
+        [Parameter(HelpMessage = "Append files to existing archive")]
+        public SwitchParameter Append { get; set; }
+
         private OutArchiveFormat _inferredOutArchiveFormat;
 
         protected override void BeginProcessing() {
@@ -145,7 +148,8 @@ namespace SevenZip4PowerShell {
                     VolumeSize = _cmdlet.VolumeSize,
                     EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent,
                     DirectoryStructure = !_cmdlet.FlattenDirectoryStructure.IsPresent,
-                    IncludeEmptyDirectories = !_cmdlet.SkipEmptyDirectories.IsPresent
+                    IncludeEmptyDirectories = !_cmdlet.SkipEmptyDirectories.IsPresent,
+                    CompressionMode = _cmdlet.Append.IsPresent ? CompressionMode.Append : CompressionMode.Create
                 };
 
                 _cmdlet.CustomInitialization?.Invoke(compressor);
