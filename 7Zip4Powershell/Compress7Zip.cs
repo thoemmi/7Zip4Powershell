@@ -148,8 +148,6 @@ namespace SevenZip4PowerShell {
                     IncludeEmptyDirectories = !_cmdlet.SkipEmptyDirectories.IsPresent
                 };
 
-                var recursion = !_cmdlet.DisableRecursion.IsPresent;
-
                 _cmdlet.CustomInitialization?.Invoke(compressor);
 
                 if (_cmdlet._directoryOrFilesFromPipeline == null) {
@@ -191,6 +189,7 @@ namespace SevenZip4PowerShell {
                     if (directoryOrFiles.Length > 1) {
                         throw new ArgumentException("Only one directory allowed as input");
                     }
+                    var recursion = !_cmdlet.DisableRecursion.IsPresent;
                     if (_cmdlet.Filter != null) {
                         if (HasPassword) {
                             compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password, _cmdlet.Filter, recursion);
