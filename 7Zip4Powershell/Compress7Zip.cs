@@ -51,6 +51,9 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Enables encrypting filenames when using the 7z format")]
         public SwitchParameter EncryptFilenames { get; set; }
 
+        [Parameter(HelpMessage = "Specifies the volume sizes in bytes, 0 for no volumes")]
+        public int VolumeSize { get; set; }
+
         private OutArchiveFormat _inferredOutArchiveFormat;
 
         protected override void BeginProcessing() {
@@ -129,10 +132,10 @@ namespace SevenZip4PowerShell {
                 var compressor = new SevenZipCompressor {
                     ArchiveFormat = _cmdlet._inferredOutArchiveFormat,
                     CompressionLevel = _cmdlet.CompressionLevel,
-                    CompressionMethod = _cmdlet.CompressionMethod
+                    CompressionMethod = _cmdlet.CompressionMethod,
+                    VolumeSize = _cmdlet.VolumeSize,
+                    EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent
                 };
-
-                compressor.EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent;
 
                 _cmdlet.CustomInitialization?.Invoke(compressor);
 
