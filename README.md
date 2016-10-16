@@ -27,6 +27,10 @@ Compress-7Zip
     [-CustomInitialization <ScriptBlock>]
     [-EncryptFilenames]
     [-VolumeSize <int>]
+    [-FlattenDirectoryStructure]
+    [-SkipEmptyDirectories]
+    [-DisableRecursion]
+    [-Append]
     [<CommonParameters>]
 
 Get-7Zip
@@ -69,6 +73,16 @@ Compress-7Zip -Path . -ArchiveFileName demo.7z -CustomInitialization $initScript
 A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm).
 
 ## Changelog
+
+### [v1.7](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.7)
+
+October 16, 2016
+
+* If `Format` is not specified, it is inferred from the file extension of `ArchiveFileName` (#24, proposed by @onyxhat)
+* Added new parameter `VolumeSize` to specify the colume size for `Compress-7Zip` (#25, proposed by @rgel)
+* Added new switches `FlattenDirectoryStructure`, `SkipEmptyDirectories`, and `DisableRecursion` to `Compress-7Zip` (#27, contributed by @itmagination)
+* Added new switch `Append` to `Compress-7Zip` to append files to an existing archive (#30, inspired by @itmagination)
+
 
 ### [v1.6](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.6)
 
