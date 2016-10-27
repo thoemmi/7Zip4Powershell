@@ -74,6 +74,12 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
+### [v1.7.1](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.7.1)
+
+October 27, 2016
+
+* Compression with password encryption could cause an exception (#33)
+
 ### [v1.7](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.7)
 
 October 16, 2016
@@ -83,7 +89,6 @@ October 16, 2016
 * Added new switches `FlattenDirectoryStructure`, `SkipEmptyDirectories`, and `DisableRecursion` to `Compress-7Zip` (#27, contributed by @itmagination)
 * Added new switch `Append` to `Compress-7Zip` to append files to an existing archive (#30, inspired by @itmagination)
 
-
 ### [v1.6](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.6)
 
 June 15, 2016
@@ -92,7 +97,6 @@ June 15, 2016
 * use default compression method in `Compress-7Zip` (previously it was PPMd, for whatever reason) (#11)
 * allow piped input for `Get-7Zip` (#15)
 * use `WriteDebug` instead of `Write` of logging (#13)
-
 
 ### [v1.5](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.5)
 

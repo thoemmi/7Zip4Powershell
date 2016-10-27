@@ -202,7 +202,7 @@ namespace SevenZip4PowerShell {
                         }
                     } else {
                         if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password, recursion);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion, _cmdlet.Password);
                         } else {
                             compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion);
                         }
