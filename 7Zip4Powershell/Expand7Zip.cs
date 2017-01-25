@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Management.Automation;
+using System.Security;
 using JetBrains.Annotations;
 using SevenZip;
 
@@ -15,11 +17,31 @@ namespace SevenZip4PowerShell {
         [ValidateNotNullOrEmpty]
         public string TargetPath { get; set; }
 
-        [Parameter]
+        [Parameter(ParameterSetName = ParameterSetNames.PlainPassword)]
         public string Password { get; set; }
+
+        [Parameter(ParameterSetName = ParameterSetNames.SecurePassword)]
+        public SecureString SecurePassword { get; set; }
 
         [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipExtractor")]
         public ScriptBlock CustomInitialization { get; set; }
+
+        private string _password;
+
+        protected override void BeginProcessing() {
+            base.BeginProcessing();
+
+            switch (ParameterSetName) {
+                case ParameterSetNames.PlainPassword:
+                    _password = Password;
+                    break;
+                case ParameterSetNames.SecurePassword:
+                    _password = Utils.SecureStringToString(SecurePassword);
+                    break;
+                default:
+                    throw new Exception($"Unsupported parameter set {ParameterSetName}");
+            }
+        }
 
         protected override CmdletWorker CreateWorker() {
             return new ExpandWorker(this);
@@ -46,7 +68,7 @@ namespace SevenZip4PowerShell {
                     _cmdlet.CustomInitialization?.Invoke(extractor);
 
                     extractor.Extracting += (sender, args) =>
-                                            WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = args.PercentDone });
+                        WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = args.PercentDone });
                     extractor.FileExtractionStarted += (sender, args) => {
                         statusDescription = $"Extracting file {args.FileInfo.FileName}";
                         Write(statusDescription);
@@ -59,8 +81,8 @@ namespace SevenZip4PowerShell {
             }
 
             private SevenZipExtractor CreateExtractor(string archiveFileName) {
-                if (!string.IsNullOrEmpty(_cmdlet.Password)) {
-                    return new SevenZipExtractor(archiveFileName, _cmdlet.Password);
+                if (!string.IsNullOrEmpty(_cmdlet._password)) {
+                    return new SevenZipExtractor(archiveFileName, _cmdlet._password);
                 } else {
                     return new SevenZipExtractor(archiveFileName);
                 }
