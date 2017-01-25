@@ -46,8 +46,8 @@ namespace SevenZip4PowerShell {
                 WriteVerbose($"Getting archive data {archiveFileName}");
 
                 SevenZipExtractor extractor;
-                if (!string.IsNullOrEmpty(Password)) {
-                    extractor = new SevenZipExtractor(archiveFileName, Password);
+                if (!string.IsNullOrEmpty(_password)) {
+                    extractor = new SevenZipExtractor(archiveFileName, _password);
                 } else {
                     extractor = new SevenZipExtractor(archiveFileName);
                 }
