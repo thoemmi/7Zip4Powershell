@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Security;
 using JetBrains.Annotations;
 using SevenZip;
 
@@ -17,7 +18,7 @@ namespace SevenZip4PowerShell {
         XZ
     }
 
-    [Cmdlet(VerbsData.Compress, "7Zip")]
+    [Cmdlet(VerbsData.Compress, "7Zip", DefaultParameterSetName = ParameterSetNames.NoPassword)]
     [PublicAPI]
     public class Compress7Zip : ThreadedCmdlet {
         [Parameter(Position = 0, Mandatory = true, HelpMessage = "The full file name of the archive")]
@@ -42,8 +43,11 @@ namespace SevenZip4PowerShell {
         [Parameter]
         public CompressionMethod CompressionMethod { get; set; } = CompressionMethod.Default;
 
-        [Parameter]
+        [Parameter(ParameterSetName = ParameterSetNames.PlainPassword)]
         public string Password { get; set; }
+
+        [Parameter(ParameterSetName = ParameterSetNames.SecurePassword)]
+        public SecureString SecurePassword { get; set; }
 
         [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipCompressor")]
         public ScriptBlock CustomInitialization { get; set; }
@@ -67,17 +71,32 @@ namespace SevenZip4PowerShell {
         public SwitchParameter Append { get; set; }
 
         private OutArchiveFormat _inferredOutArchiveFormat;
+        private string _password;
 
         protected override void BeginProcessing() {
             base.BeginProcessing();
 
             _inferredOutArchiveFormat = GetInferredOutArchiveFormat();
 
+            switch (ParameterSetName) {
+                case ParameterSetNames.NoPassword:
+                    _password = null;
+                    break;
+                case ParameterSetNames.PlainPassword:
+                    _password = Password;
+                    break;
+                case ParameterSetNames.SecurePassword:
+                    _password = Utils.SecureStringToString(SecurePassword);
+                    break;
+                default:
+                    throw new Exception($"Unsupported parameter set {ParameterSetName}");
+            }
+
             if (EncryptFilenames.IsPresent) {
                 if (_inferredOutArchiveFormat != OutArchiveFormat.SevenZip) {
                     throw new ArgumentException("Encrypting filenames is supported for 7z format only.");
                 }
-                if (string.IsNullOrEmpty(Password)) {
+                if (string.IsNullOrEmpty(_password)) {
                     throw new ArgumentException("Encrypting filenames is supported only when using a password.");
                 }
             }
@@ -138,7 +157,7 @@ namespace SevenZip4PowerShell {
                 _cmdlet = cmdlet;
             }
 
-            private bool HasPassword => !String.IsNullOrEmpty(_cmdlet.Password);
+            private bool HasPassword => !String.IsNullOrEmpty(_cmdlet._password);
 
             public override void Execute() {
                 var compressor = new SevenZipCompressor {
@@ -184,7 +203,7 @@ namespace SevenZip4PowerShell {
                         throw new FileNotFoundException("File(s) not found: " + string.Join(", ", notFoundFiles));
                     }
                     if (HasPassword) {
-                        compressor.CompressFilesEncrypted(archiveFileName, _cmdlet.Password, directoryOrFiles);
+                        compressor.CompressFilesEncrypted(archiveFileName, _cmdlet._password, directoryOrFiles);
                     } else {
                         compressor.CompressFiles(archiveFileName, directoryOrFiles);
                     }
@@ -196,13 +215,13 @@ namespace SevenZip4PowerShell {
                     var recursion = !_cmdlet.DisableRecursion.IsPresent;
                     if (_cmdlet.Filter != null) {
                         if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Password, _cmdlet.Filter, recursion);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, _cmdlet.Filter, recursion);
                         } else {
                             compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Filter, recursion);
                         }
                     } else {
                         if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion, _cmdlet.Password);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion, _cmdlet._password);
                         } else {
                             compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion);
                         }

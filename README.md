@@ -12,7 +12,7 @@ The syntax is simple as this:
 Expand-7Zip
     [-ArchiveFileName] <string> 
     [-TargetPath] <string>  
-    [-Password <string>]
+    [-Password <string>] | [-SecurePassword <securestring>]
     [-CustomInitialization <ScriptBlock>]
     [<CommonParameters>]
 
@@ -23,7 +23,7 @@ Compress-7Zip
     [-Format <OutputFormat> {Auto | SevenZip | Zip | GZip | BZip2 | Tar | XZ}] 
     [-CompressionLevel <CompressionLevel> {None | Fast | Low | Normal | High | Ultra}] 
     [-CompressionMethod <CompressionMethod> {Copy | Deflate | Deflate64 | BZip2 | Lzma | Lzma2 | Ppmd | Default}]
-    [-Password <string>]
+    [-Password <string>] | [-SecurePassword <securestring>]
     [-CustomInitialization <ScriptBlock>]
     [-EncryptFilenames]
     [-VolumeSize <int>]
@@ -35,12 +35,12 @@ Compress-7Zip
 
 Get-7Zip
     [-ArchiveFileName] <string[]>
-    [-Password <string>]
+    [-Password <string>] | [-SecurePassword <securestring>]
     [<CommonParameters>]
 
 Get-7ZipInformation
     [-ArchiveFileName] <string[]> 
-    [-Password <string>]
+    [-Password <string>] | [-SecurePassword <securestring>]
     [<CommonParameters>]
 ```
 
