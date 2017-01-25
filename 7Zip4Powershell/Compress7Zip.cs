@@ -18,7 +18,7 @@ namespace SevenZip4PowerShell {
         XZ
     }
 
-    [Cmdlet(VerbsData.Compress, "7Zip")]
+    [Cmdlet(VerbsData.Compress, "7Zip", DefaultParameterSetName = ParameterSetNames.NoPassword)]
     [PublicAPI]
     public class Compress7Zip : ThreadedCmdlet {
         [Parameter(Position = 0, Mandatory = true, HelpMessage = "The full file name of the archive")]
@@ -79,6 +79,9 @@ namespace SevenZip4PowerShell {
             _inferredOutArchiveFormat = GetInferredOutArchiveFormat();
 
             switch (ParameterSetName) {
+                case ParameterSetNames.NoPassword:
+                    _password = null;
+                    break;
                 case ParameterSetNames.PlainPassword:
                     _password = Password;
                     break;

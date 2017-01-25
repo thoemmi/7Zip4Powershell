@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 using SevenZip;
 
 namespace SevenZip4PowerShell {
-    [Cmdlet(VerbsData.Expand, "7Zip")]
+    [Cmdlet(VerbsData.Expand, "7Zip", DefaultParameterSetName = ParameterSetNames.NoPassword)]
     [PublicAPI]
     public class Expand7Zip : ThreadedCmdlet {
         [Parameter(Position = 0, Mandatory = true, HelpMessage = "The full file name of the archive")]
@@ -32,6 +32,9 @@ namespace SevenZip4PowerShell {
             base.BeginProcessing();
 
             switch (ParameterSetName) {
+                case ParameterSetNames.NoPassword:
+                    _password = null;
+                    break;
                 case ParameterSetNames.PlainPassword:
                     _password = Password;
                     break;

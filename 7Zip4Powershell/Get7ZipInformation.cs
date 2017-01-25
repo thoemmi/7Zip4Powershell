@@ -1,11 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Security;
 using JetBrains.Annotations;
 using SevenZip;
 
 namespace SevenZip4PowerShell {
-    [Cmdlet(VerbsCommon.Get, "7ZipInformation")]
+    [Cmdlet(VerbsCommon.Get, "7ZipInformation", DefaultParameterSetName = ParameterSetNames.NoPassword)]
     [OutputType(typeof(ArchiveInformation))]
     [PublicAPI]
     public class Get7ZipInformation : PSCmdlet {
@@ -13,11 +15,30 @@ namespace SevenZip4PowerShell {
         [ValidateNotNullOrEmpty]
         public string[] ArchiveFileName { get; set; }
 
-        [Parameter]
+        [Parameter(ParameterSetName = ParameterSetNames.PlainPassword)]
         public string Password { get; set; }
+
+        [Parameter(ParameterSetName = ParameterSetNames.SecurePassword)]
+        public SecureString SecurePassword { get; set; }
+
+        private string _password;
 
         protected override void BeginProcessing() {
             SevenZipBase.SetLibraryPath(Utils.SevenZipLibraryPath);
+
+            switch (ParameterSetName) {
+                case ParameterSetNames.NoPassword:
+                    _password = null;
+                    break;
+                case ParameterSetNames.PlainPassword:
+                    _password = Password;
+                    break;
+                case ParameterSetNames.SecurePassword:
+                    _password = Utils.SecureStringToString(SecurePassword);
+                    break;
+                default:
+                    throw new Exception($"Unsupported parameter set {ParameterSetName}");
+            }
         }
 
         protected override void ProcessRecord() {
