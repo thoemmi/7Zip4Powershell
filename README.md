@@ -74,6 +74,12 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
+### [v1.8](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.8)
+
+January 25, 2017
+
+* Added optional `SecurePassword` parameter of type `SecureString` to all cmdlets. (#34, #36)
+
 ### [v1.7.1](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.7.1)
 
 October 27, 2016
