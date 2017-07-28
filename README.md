@@ -13,7 +13,6 @@ Expand-7Zip
     [-ArchiveFileName] <string> 
     [-TargetPath] <string>  
     [-Password <string>] | [-SecurePassword <securestring>]
-    [-CustomInitialization <ScriptBlock>]
     [<CommonParameters>]
 
 Compress-7Zip
@@ -58,8 +57,8 @@ where he describes some usage scenarios with 7Zip4PowerShell.
 
 ## Customization
 
-Both `Compress-7Zip` and `Expand-7Zip` accept script blocks for customization. The script blocks get passed the current
-`SevenZipCompressor` and `SevenZipExtractor` instance respectively. E.g. you can set the multithread mode this way:
+`Compress-7Zip` accepts a script block for customization. The script block gets passed the current
+`SevenZipCompressor` instance. E.g. you can set the multithread mode this way:
 
 ```powershell
 $initScript = {
@@ -73,6 +72,13 @@ Compress-7Zip -Path . -ArchiveFileName demo.7z -CustomInitialization $initScript
 A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm).
 
 ## Changelog
+
+### [v1.9](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.9)
+
+**Not released yet**
+
+* Updated 7-Zip dlls to 16.04
+* Disabled the `CustomInitialization` parameter for `Expand-7Zip`, will be removed in future versions.
 
 ### [v1.8](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.8)
 

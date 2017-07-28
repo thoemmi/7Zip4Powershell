@@ -24,6 +24,7 @@ namespace SevenZip4PowerShell {
         public SecureString SecurePassword { get; set; }
 
         [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipExtractor")]
+        [Obsolete("The parameter CustomInitialization is obsolete, as it never worked as intended.")]
         public ScriptBlock CustomInitialization { get; set; }
 
         private string _password;
@@ -68,8 +69,6 @@ namespace SevenZip4PowerShell {
                 WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = 0 });
 
                 using (var extractor = CreateExtractor(archiveFileName)) {
-                    _cmdlet.CustomInitialization?.Invoke(extractor);
-
                     extractor.Extracting += (sender, args) =>
                         WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = args.PercentDone });
                     extractor.FileExtractionStarted += (sender, args) => {
