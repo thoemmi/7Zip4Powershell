@@ -40,7 +40,8 @@ namespace SevenZip4PowerShell {
                 try {
                     worker.Execute();
                 } catch (Exception ex) {
-                    worker.Queue.Add(new ErrorRecord(ex, "err01", ErrorCategory.NotSpecified, worker));
+					worker.Queue.Add(new ProgressRecord(0, "err01", "Exception") { RecordType = ProgressRecordType.Completed });
+					worker.Queue.Add(new ErrorRecord(ex, "err01", ErrorCategory.NotSpecified, worker));
                 }
                 finally {
                     worker.Queue.CompleteAdding();
