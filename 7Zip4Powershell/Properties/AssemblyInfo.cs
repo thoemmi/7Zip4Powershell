@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("7Zip4Powershell")]
-[assembly: AssemblyCopyright("Copyright © 2012-2017")]
+[assembly: AssemblyCopyright("Copyright © 2012-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
