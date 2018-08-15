@@ -11,7 +11,7 @@
     <iconUrl>https://raw.githubusercontent.com/thoemmi/7Zip4Powershell/master/Assets/7zip4powershell.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Powershell module for creating and extracting 7-Zip archives</description>
-    <copyright>Copyright 2013-2017</copyright>
+    <copyright>Copyright 2013-2018</copyright>
     <tags>powershell 7zip 7-zip zip archive extract compress</tags>
   </metadata>
   <files>
