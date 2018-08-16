@@ -86,8 +86,6 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ### [v1.9](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.9)
 
-**Not released yet**
-
 * Updated 7-Zip dlls to 16.04
 * Disabled the `CustomInitialization` parameter for `Expand-7Zip`, will be removed in future versions.
 
