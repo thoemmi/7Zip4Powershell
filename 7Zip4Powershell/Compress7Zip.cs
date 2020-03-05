@@ -217,13 +217,13 @@ namespace SevenZip4PowerShell {
                         if (HasPassword) {
                             compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, _cmdlet.Filter, recursion);
                         } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Filter, recursion);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, _cmdlet.Filter, recursion);
                         }
                     } else {
                         if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion, _cmdlet._password);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, null, recursion);
                         } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, null, recursion);
                         }
                     }
                 }
