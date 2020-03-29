@@ -84,6 +84,10 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
+### [v1.10](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.10)
+
+* Updated 7-Zip dlls to 19.00 ([#56](https://github.com/thoemmi/7Zip4Powershell/pull/56), contributed by [@kborowinski](https://github.com/kborowinski))
+
 ### [v1.9](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.9)
 
 * Updated 7-Zip dlls to 16.04

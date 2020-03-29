@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Thomas Freudenberg</Authors>
+
+    <Copyright>Copyright 2015-$([System.DateTime]::Now.ToString(`yyyy`))</Copyright>
+
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/thoemmi/7Zip4Powershell</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/thoemmi/7Zip4Powershell/master/Assets/7zip4powershell.png</PackageIconUrl>
+  </PropertyGroup>
+</Project>

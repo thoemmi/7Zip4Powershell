@@ -8,3 +8,4 @@ _ReSharper*
 
 *.nupkg
 /.vs
+/Module
