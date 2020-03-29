@@ -25,7 +25,8 @@ New-Item $moduleTargetPath -ItemType Directory | Out-Null
 Copy-Item -Path (Join-Path $PSScriptRoot "7Zip4Powershell" "bin" $configuration "net461" "*.*") -Exclude "JetBrains.Annotations.dll" -Destination $moduleTargetPath
 
 # determine the version
-$version = (Get-Command (Join-Path $moduleTargetPath "7Zip4PowerShell.dll")).FileVersionInfo.FileVersion
+$versionInfo = (Get-Command (Join-Path $moduleTargetPath "7Zip4PowerShell.dll")).FileVersionInfo
+$version = "$($versionInfo.FileMajorPart).$($versionInfo.FileMinorPart).$($versionInfo.FileBuildPart)"
 
 # patch the version in the .PSD1 file
 $psd1File = Join-Path $moduleTargetPath "7Zip4PowerShell.psd1"
