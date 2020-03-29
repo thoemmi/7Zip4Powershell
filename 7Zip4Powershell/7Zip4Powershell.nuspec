@@ -11,11 +11,11 @@
     <iconUrl>https://raw.githubusercontent.com/thoemmi/7Zip4Powershell/master/Assets/7zip4powershell.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Powershell module for creating and extracting 7-Zip archives</description>
-    <copyright>Copyright 2013-2018</copyright>
+    <copyright>Copyright 2013-2020</copyright>
     <tags>powershell 7zip 7-zip zip archive extract compress</tags>
   </metadata>
   <files>
-    <file src="bin\$configuration$\*.dll" target="tools" exclude="**\JetBrains.*"/>
-    <file src="bin\$configuration$\*.psd1" target="tools"/>
+    <file src="bin\$configuration$\*.dll" target="lib\net461" exclude="**\JetBrains.*"/>
+    <file src="bin\$configuration$\*.psd1" target="lib\net461"/>
   </files>
 </package>
