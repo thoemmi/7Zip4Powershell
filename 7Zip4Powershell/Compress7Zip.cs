@@ -67,6 +67,9 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Disables preservation of empty directories")]
         public SwitchParameter SkipEmptyDirectories { get; set; }
 
+        [Parameter(HelpMessage = "Preserves directory root")]
+        public SwitchParameter PreserveDirectoryRoot { get; set; }
+
         [Parameter(HelpMessage = "Disables recursive files search")]
         public SwitchParameter DisableRecursion { get; set; }
 
@@ -171,6 +174,7 @@ namespace SevenZip4PowerShell {
                     EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent,
                     DirectoryStructure = !_cmdlet.FlattenDirectoryStructure.IsPresent,
                     IncludeEmptyDirectories = !_cmdlet.SkipEmptyDirectories.IsPresent,
+                    PreserveDirectoryRoot = _cmdlet.PreserveDirectoryRoot.IsPresent,
                     CompressionMode = _cmdlet.Append.IsPresent ? CompressionMode.Append : CompressionMode.Create
                 };
 
