@@ -189,7 +189,8 @@ namespace SevenZip4PowerShell {
                 // Final path for the archive
                 var outputPath = !string.IsNullOrEmpty(_cmdlet.OutputPath) ? _cmdlet.OutputPath : _cmdlet.SessionState.Path.CurrentFileSystemLocation.Path;
                 var directoryOrFiles = _cmdlet._directoryOrFilesFromPipeline
-                    .Select(path => new FileInfo(System.IO.Path.Combine(outputPath, path)).FullName).ToArray();
+                                                                        // Don't put outputPath here, it will break the relative path
+                    .Select(path => new FileInfo(System.IO.Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, path)).FullName).ToArray();
                 var archiveFileName = new FileInfo(System.IO.Path.Combine(outputPath, _cmdlet.ArchiveFileName)).FullName;
 
                 var activity = directoryOrFiles.Length > 1
