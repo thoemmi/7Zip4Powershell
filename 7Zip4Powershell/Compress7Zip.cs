@@ -188,6 +188,14 @@ namespace SevenZip4PowerShell {
 
                 // Final path for the archive
                 var outputPath = !string.IsNullOrEmpty(_cmdlet.OutputPath) ? _cmdlet.OutputPath : _cmdlet.SessionState.Path.CurrentFileSystemLocation.Path;
+                // Check whether the output path is a path to the file
+                // The folder and file name cannot be the same in the same folder
+                if (File.Exists(outputPath))
+                    throw new ArgumentException("The output path is a file, not a directory");
+                // If the directory doesn't exist, create it
+                if (!Directory.Exists(outputPath))
+                    Directory.CreateDirectory(outputPath);
+
                 var directoryOrFiles = _cmdlet._directoryOrFilesFromPipeline
                                                                         // Don't put outputPath here, it will break the relative path
                     .Select(path => new FileInfo(System.IO.Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, path)).FullName).ToArray();
