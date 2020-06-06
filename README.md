@@ -85,7 +85,7 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
-### vNext
+### [v1.11](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.11)
 
 * Replaces *SevenZipSharp.Net45* with *Squid-Box.SevenZipSharp* library.
   ([#57](https://github.com/thoemmi/7Zip4Powershell/pull/57), contributed by [@kborowinski](https://github.com/kborowinski))
