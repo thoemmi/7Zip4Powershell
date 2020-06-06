@@ -30,7 +30,7 @@ namespace SevenZip4PowerShell {
         public string Path { get; set; }
 
         [Parameter(Position = 2, Mandatory = false, HelpMessage = "The filter to be applied if Path points to a directory")]
-        public string Filter { get; set; }
+        public string Filter { get; set; } = "*";
 
         private List<string> _directoryOrFilesFromPipeline;
 
@@ -63,6 +63,9 @@ namespace SevenZip4PowerShell {
 
         [Parameter(HelpMessage = "Disables preservation of empty directories")]
         public SwitchParameter SkipEmptyDirectories { get; set; }
+
+        [Parameter(HelpMessage = "Preserves directory root")]
+        public SwitchParameter PreserveDirectoryRoot { get; set; }
 
         [Parameter(HelpMessage = "Disables recursive files search")]
         public SwitchParameter DisableRecursion { get; set; }
@@ -168,6 +171,7 @@ namespace SevenZip4PowerShell {
                     EncryptHeaders = _cmdlet.EncryptFilenames.IsPresent,
                     DirectoryStructure = !_cmdlet.FlattenDirectoryStructure.IsPresent,
                     IncludeEmptyDirectories = !_cmdlet.SkipEmptyDirectories.IsPresent,
+                    PreserveDirectoryRoot = _cmdlet.PreserveDirectoryRoot.IsPresent,
                     CompressionMode = _cmdlet.Append.IsPresent ? CompressionMode.Append : CompressionMode.Create
                 };
 
@@ -217,13 +221,13 @@ namespace SevenZip4PowerShell {
                         if (HasPassword) {
                             compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, _cmdlet.Filter, recursion);
                         } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet.Filter, recursion);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, _cmdlet.Filter, recursion);
                         }
                     } else {
                         if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion, _cmdlet._password);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, null, recursion);
                         } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, recursion);
+                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, null, recursion);
                         }
                     }
                 }
