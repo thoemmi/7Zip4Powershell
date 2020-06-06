@@ -41,6 +41,7 @@ Compress-7Zip
     [-SkipEmptyDirectories]
     [-DisableRecursion]
     [-Append]
+    [-PreserveDirectoryRoot]
     [<CommonParameters>]
 
 Get-7Zip
@@ -83,6 +84,11 @@ Compress-7Zip -Path . -ArchiveFileName demo.7z -CustomInitialization $initScript
 A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm).
 
 ## Changelog
+
+### vNext
+
+* Replaces *SevenZipSharp.Net45* with *Squid-Box.SevenZipSharp* library.
+ ([#57](https://github.com/thoemmi/7Zip4Powershell/pull/57), contributed by [@kborowinski](https://github.com/kborowinski))
 
 ### [v1.10](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.10)
 
