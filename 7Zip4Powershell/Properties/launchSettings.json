@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "7Zip4PowerShell": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "commandLineArgs": "-NoExit -NoLogo -Command \"Import-Module $(TargetPath)\""
+    }
+  }
+}
