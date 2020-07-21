@@ -203,13 +203,13 @@ namespace SevenZip4PowerShell {
                 }
 
                 var directoryOrFiles = _cmdlet._directoryOrFilesFromPipeline
-                                                                        // Don't put outputPath here, it will break the relative path
-                    .Select(path => new FileInfo(System.IO.Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, path)).FullName).ToArray();
-                var archiveFileName = new FileInfo(System.IO.Path.Combine(outputPath, _cmdlet.ArchiveFileName)).FullName;
+                    // Don't put outputPath here, it will break the relative path
+                    .Select(System.IO.Path.GetFullPath).ToArray();
+                var archiveFileName = System.IO.Path.GetFullPath(System.IO.Path.Combine(outputPath, System.IO.Path.GetFileName(_cmdlet.ArchiveFileName)));
 
                 var activity = directoryOrFiles.Length > 1
                     ? $"Compressing {directoryOrFiles.Length} Files to {archiveFileName}"
-                    : $"Compressing {directoryOrFiles.First()} to {archiveFileName}";
+                    : $"Compressing {directoryOrFiles[0]} to {archiveFileName}";
 
                 var currentStatus = "Compressing";
                 compressor.FilesFound += (sender, args) =>

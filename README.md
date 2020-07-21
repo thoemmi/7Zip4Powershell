@@ -11,7 +11,7 @@ Powershell module for creating and extracting 7-Zip archives supporting Powershe
 > of other users find my package helpful.
 >
 > I really appreciated if you report issues or suggest new feature. However,
-> I don't use this package myself anymore, and I don't have the time to 
+> I don't use this package myself anymore, and I don't have the time to
 > maintain it appropriately. So please don't expect me to fix any bugs. Any Pull
 > Request is welcome though.
 
@@ -21,17 +21,18 @@ The syntax is simple as this:
 
 ```powershell
 Expand-7Zip
-    [-ArchiveFileName] <string> 
-    [-TargetPath] <string>  
+    [-ArchiveFileName] <string>
+    [-TargetPath] <string>
     [-Password <string>] | [-SecurePassword <securestring>]
     [<CommonParameters>]
 
 Compress-7Zip
-    [-ArchiveFileName] <string> 
-    [-Path] <string> 
-    [[-Filter] <string>] 
-    [-Format <OutputFormat> {Auto | SevenZip | Zip | GZip | BZip2 | Tar | XZ}] 
-    [-CompressionLevel <CompressionLevel> {None | Fast | Low | Normal | High | Ultra}] 
+    [-ArchiveFileName] <string>
+    [-Path] <string>
+    [[-Filter] <string>]
+    [-OutputPath] <string>
+    [-Format <OutputFormat> {Auto | SevenZip | Zip | GZip | BZip2 | Tar | XZ}]
+    [-CompressionLevel <CompressionLevel> {None | Fast | Low | Normal | High | Ultra}]
     [-CompressionMethod <CompressionMethod> {Copy | Deflate | Deflate64 | BZip2 | Lzma | Lzma2 | Ppmd | Default}]
     [-Password <string>] | [-SecurePassword <securestring>]
     [-CustomInitialization <ScriptBlock>]
@@ -50,7 +51,7 @@ Get-7Zip
     [<CommonParameters>]
 
 Get-7ZipInformation
-    [-ArchiveFileName] <string[]> 
+    [-ArchiveFileName] <string[]>
     [-Password <string>] | [-SecurePassword <securestring>]
     [<CommonParameters>]
 ```
@@ -87,7 +88,7 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ### [v1.12](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.12)
 
-* Uses PowerShell 5 reference assembly, which reduces the package size dramatically 
+* Uses PowerShell 5 reference assembly, which reduces the package size dramatically
   ([#61](https://github.com/thoemmi/7Zip4Powershell/pull/61), contributed by [@kborowinski](https://github.com/kborowinski))
 
 ### [v1.11](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.11)
@@ -153,13 +154,13 @@ May 29, 2016
 30 March, 2016
 
 * Added `Password` parameter to both `Compress-7Zip` and `Expand-7Zip` (#8)
-  
+
 ## Motivation
 
 I've written and maintaining the module just for fun and to serve my own needs. If
-it's useful for you too, that's great. I don't demand anything in return. 
+it's useful for you too, that's great. I don't demand anything in return.
 
-However, if you like this module and feel the urge to give something back, a coffee 
+However, if you like this module and feel the urge to give something back, a coffee
 or a beer is always appreciated. Thank you very much in advance.
 
 [![PayPal.me](https://img.shields.io/badge/PayPal-me-blue.svg?maxAge=2592000)](https://www.paypal.me/ThomasFreudenberg)
