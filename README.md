@@ -86,6 +86,13 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
+### [v1.13](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.13)
+
+* Improved handling of paths in `ArchiveFileName`
+  ([#63](https://github.com/thoemmi/7Zip4Powershell/pull/63) and [#65](https://github.com/thoemmi/7Zip4Powershell/pull/65), contributed by [@iRebbok](https://github.com/iRebbok))
+* Updated readme
+  ([#64](https://github.com/thoemmi/7Zip4Powershell/pull/64), contributed by [@kborowinski](https://github.com/kborowinski))
+
 ### [v1.12](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.12)
 
 * Uses PowerShell 5 reference assembly, which reduces the package size dramatically
