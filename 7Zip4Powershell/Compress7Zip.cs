@@ -186,10 +186,25 @@ namespace SevenZip4PowerShell {
                     };
                 }
 
+                // true -> parameter assigned
+                // false -> parameter not assigned
+                var outputPathIsNotEmptyOrNull = !string.IsNullOrEmpty(_cmdlet.OutputPath);
                 // Final path for the archive
-                var outputPath = !string.IsNullOrEmpty(_cmdlet.OutputPath) 
-                    ? _cmdlet.OutputPath 
+                var outputPath = outputPathIsNotEmptyOrNull
+                    ? _cmdlet.OutputPath
                     : _cmdlet.SessionState.Path.CurrentFileSystemLocation.Path;
+
+                // If the `OutputPath` parameter is not assigned
+                // and there is an absolute or relative directory in the `ArchiveFileName`,
+                // then use it instead
+                var archiveDirectory = System.IO.Path.GetDirectoryName(_cmdlet.ArchiveFileName);
+                if (!string.IsNullOrEmpty(archiveDirectory) && !outputPathIsNotEmptyOrNull)
+                {
+                    if (System.IO.Path.IsPathRooted(archiveDirectory))
+                        outputPath = archiveDirectory;
+                    else // If the path isn't absolute, then combine it with the path from which the script was called
+                        outputPath = System.IO.Path.Combine(outputPath, archiveDirectory);
+                }
 
                 // Check whether the output path is a path to the file
                 // The folder and file name cannot be the same in the same folder
@@ -203,7 +218,6 @@ namespace SevenZip4PowerShell {
                 }
 
                 var directoryOrFiles = _cmdlet._directoryOrFilesFromPipeline
-                    // Don't put outputPath here, it will break the relative path
                     .Select(System.IO.Path.GetFullPath).ToArray();
                 var archiveFileName = System.IO.Path.GetFullPath(System.IO.Path.Combine(outputPath, System.IO.Path.GetFileName(_cmdlet.ArchiveFileName)));
 
