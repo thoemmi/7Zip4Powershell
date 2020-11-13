@@ -25,13 +25,14 @@ New-Item $moduleTargetPath -ItemType Directory | Out-Null
 Copy-Item -Path (Join-Path $PSScriptRoot "7Zip4Powershell" "bin" $configuration "netstandard2.0" "*.*") -Exclude "JetBrains.Annotations.dll" -Destination $moduleTargetPath
 
 # determine the version
-$versionInfo = (Get-Command (Join-Path $moduleTargetPath "7Zip4PowerShell.dll")).FileVersionInfo
-$version = "$($versionInfo.FileMajorPart).$($versionInfo.FileMinorPart).$($versionInfo.FileBuildPart)"
+$versionInfo = gitversion | ConvertFrom-Json
+$version = "$($versionInfo.Major).$($versionInfo.Minor).$($versionInfo.Patch)"
+$prerelease = $versionInfo.PreReleaseTag
 
 # patch the version in the .PSD1 file
 $psd1File = Join-Path $moduleTargetPath "7Zip4PowerShell.psd1"
 Write-Host "Patching version in $psd1File file to $version"
-((Get-Content $psd1File -Raw) -replace '\$version\$',$version) | Set-Content $psd1File
+(((Get-Content $psd1File -Raw) -replace '\$version\$',$version) -replace '\$prerelease\$',$prerelease) | Set-Content $psd1File
 
 # finally publish the 
 Publish-Module -Path $moduleTargetPath -NuGetApiKey $NuGetApiKey

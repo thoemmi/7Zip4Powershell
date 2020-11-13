@@ -14,6 +14,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/thoemmi/7Zip4Powershell'
         IconUri = 'https://raw.githubusercontent.com/thoemmi/7Zip4Powershell/master/Assets/7zip4powershell.png'
         RequireLicenseAcceptance = $false
+        PreRelease = '$prerelease$'
         # ReleaseNotes = ''
     } # End of PSData hashtable
 }
