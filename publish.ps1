@@ -27,7 +27,7 @@ Copy-Item -Path (Join-Path $PSScriptRoot "7Zip4Powershell" "bin" $configuration 
 # determine the version
 $versionInfo = gitversion | ConvertFrom-Json
 $version = "$($versionInfo.Major).$($versionInfo.Minor).$($versionInfo.Patch)"
-$prerelease = $versionInfo.PreReleaseTag
+$prerelease = $versionInfo.NuGetPreReleaseTagV2
 
 # patch the version in the .PSD1 file
 $psd1File = Join-Path $moduleTargetPath "7Zip4PowerShell.psd1"
