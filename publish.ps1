@@ -22,7 +22,7 @@ if (Test-Path $moduleTargetPath) {
 New-Item $moduleTargetPath -ItemType Directory | Out-Null
 
 # copy all required files to that folder
-Copy-Item -Path (Join-Path $PSScriptRoot "7Zip4Powershell" "bin" $configuration "net461" "*.*") -Exclude "JetBrains.Annotations.dll" -Destination $moduleTargetPath
+Copy-Item -Path (Join-Path $PSScriptRoot "7Zip4Powershell" "bin" $configuration "netstandard2.0" "*.*") -Exclude "JetBrains.Annotations.dll" -Destination $moduleTargetPath
 
 # determine the version
 $versionInfo = (Get-Command (Join-Path $moduleTargetPath "7Zip4PowerShell.dll")).FileVersionInfo
