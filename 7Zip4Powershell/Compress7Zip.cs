@@ -62,7 +62,7 @@ namespace SevenZip4PowerShell {
         public SwitchParameter FlattenDirectoryStructure { get; set; }
 
         [Parameter(HelpMessage = "Specifies the volume sizes in bytes, 0 for no volumes")]
-        public int VolumeSize { get; set; }
+        public long VolumeSize { get; set; }
 
         [Parameter(HelpMessage = "Disables preservation of empty directories")]
         public SwitchParameter SkipEmptyDirectories { get; set; }
