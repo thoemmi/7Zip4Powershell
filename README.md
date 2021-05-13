@@ -88,7 +88,7 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ### [v2.0](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v2.0)
 
-* Now based on .NET Standard 2.0 (thanks to @kborowinski for testing) 
+* Now based on .NET Standard 2.0 (thanks to [@kborowinski](https://github.com/kborowinski) for testing)
 
 ### [v1.13](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v1.13)
 
