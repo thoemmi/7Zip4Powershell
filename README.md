@@ -63,10 +63,10 @@ where he describes some usage scenarios with 7Zip4PowerShell.
 
 ## Where to get it
 
-7Zip4Powershell is published [as a NuGet package](https://nuget.org/packages/7Zip4Powershell/) and [at PowerShell Gallery](https://www.powershellgallery.com/packages/7Zip4Powershell).
+7Zip4Powershell is published at [PowerShell Gallery](https://www.powershellgallery.com/packages/7Zip4Powershell).
 
-[![NuGet](https://img.shields.io/nuget/v/7Zip4Powershell.svg?maxAge=2592000)](https://nuget.org/packages/7Zip4Powershell/)
-[![https://www.powershellgallery.com/packages/7Zip4Powershell](https://img.shields.io/badge/PowerShell%20Gallery-download-blue.svg)](https://www.powershellgallery.com/packages/7Zip4Powershell)
+
+[![https://www.powershellgallery.com/packages/7Zip4Powershell](https://img.shields.io/powershellgallery/v/7Zip4Powershell)](https://www.powershellgallery.com/packages/7Zip4Powershell)
 
 ## Customization
 
