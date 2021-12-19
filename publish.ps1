@@ -25,7 +25,8 @@ New-Item $moduleTargetPath -ItemType Directory | Out-Null
 Copy-Item -Path (Join-Path $PSScriptRoot "7Zip4Powershell" "bin" $configuration "netstandard2.0" "*.*") -Exclude "JetBrains.Annotations.dll" -Destination $moduleTargetPath
 
 # determine the version
-$versionInfo = gitversion | ConvertFrom-Json
+dotnet tool restore
+$versionInfo = dotnet tool run dotnet-gitversion | ConvertFrom-Json
 $version = "$($versionInfo.Major).$($versionInfo.Minor).$($versionInfo.Patch)"
 $prerelease = $versionInfo.NuGetPreReleaseTagV2
 
