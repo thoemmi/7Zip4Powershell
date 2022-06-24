@@ -25,9 +25,9 @@ namespace SevenZip4PowerShell {
         [ValidateNotNullOrEmpty]
         public string ArchiveFileName { get; set; }
 
-        [Parameter(Position = 1, Mandatory = true, HelpMessage = "The source folder or file", ValueFromPipeline = true)]
+        [Parameter(Position = 1, Mandatory = true, HelpMessage = "The source folder(s) or file(s)", ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
-        public string Path { get; set; }
+        public List<string> Path { get; set; }
 
         [Parameter(Position = 2, Mandatory = false, HelpMessage = "The filter to be applied if Path points to a directory")]
         public string Filter { get; set; } = "*";
@@ -149,7 +149,7 @@ namespace SevenZip4PowerShell {
                 _directoryOrFilesFromPipeline = new List<string>();
             }
 
-            _directoryOrFilesFromPipeline.Add(Path);
+            _directoryOrFilesFromPipeline.AddRange(Path);
         }
 
         protected override CmdletWorker CreateWorker() {
@@ -181,9 +181,7 @@ namespace SevenZip4PowerShell {
                 _cmdlet.CustomInitialization?.Invoke(compressor);
 
                 if (_cmdlet._directoryOrFilesFromPipeline == null) {
-                    _cmdlet._directoryOrFilesFromPipeline = new List<string> {
-                        _cmdlet.Path
-                    };
+                    _cmdlet._directoryOrFilesFromPipeline = new List<string>(_cmdlet.Path);
                 }
 
                 // true -> parameter assigned
@@ -218,11 +216,33 @@ namespace SevenZip4PowerShell {
                 }
 
                 var directoryOrFiles = _cmdlet._directoryOrFilesFromPipeline
-                    .Select(System.IO.Path.GetFullPath).ToArray();
+                    .Select(System.IO.Path.GetFullPath).ToList<string>();
                 var archiveFileName = System.IO.Path.GetFullPath(System.IO.Path.Combine(outputPath, System.IO.Path.GetFileName(_cmdlet.ArchiveFileName)));
+                
+                // This will split the directoryOrFiles list into two lists, one for files and one for Directories.
+                // Then we got through the list of directories and collect all files that recide within them.
+                // Adding them to the list of files to compress before moving on.
+                var tempfilesToCompress = directoryOrFiles.Where(path => new FileInfo(path).Exists).ToList<string>();
+                var directoriesToCompress = directoryOrFiles.Where(path => new DirectoryInfo(path).Exists).ToArray();
+                if (directoriesToCompress.Any(path => new DirectoryInfo(path).Exists)) {
+                    // If there is a Filter set, apply it to the directory-serach
+                    var pattern = _cmdlet.Filter.Length == 0 ? "*" : _cmdlet.Filter;
+                    // check if Recursion has been disabled.
+                    var recursion = _cmdlet.DisableRecursion ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
 
-                var activity = directoryOrFiles.Length > 1
-                    ? $"Compressing {directoryOrFiles.Length} Files to {archiveFileName}"
+                    foreach(var dir in directoriesToCompress) {
+                        // Find all files, including all subdirectories
+                        var subfiles = System.IO.Directory.GetFiles(dir, pattern, recursion);
+                        // Adding them to the complete list if files.
+                        tempfilesToCompress.AddRange(subfiles);
+                    }
+                }
+
+                // Turning the List<string> into a string[] for the compressor below.
+                var filesToCompress = tempfilesToCompress.ToArray();                
+                
+                var activity = filesToCompress.Length > 1
+                    ? $"Compressing {directoriesToCompress.Length} Directories and {filesToCompress.Length} Files to {archiveFileName}"
                     : $"Compressing {directoryOrFiles[0]} to {archiveFileName}";
 
                 var currentStatus = "Compressing";
@@ -235,37 +255,18 @@ namespace SevenZip4PowerShell {
                     Write($"Compressing {args.FileName}");
                 };
 
-                if (directoryOrFiles.Any(path => new FileInfo(path).Exists)) {
-                    var notFoundFiles = directoryOrFiles.Where(path => !new FileInfo(path).Exists).ToArray();
+                if (filesToCompress.Any(path => new FileInfo(path).Exists)) {
+                    var notFoundFiles = filesToCompress.Where(path => !new FileInfo(path).Exists).ToArray();
                     if (notFoundFiles.Any()) {
                         throw new FileNotFoundException("File(s) not found: " + string.Join(", ", notFoundFiles));
                     }
                     if (HasPassword) {
-                        compressor.CompressFilesEncrypted(archiveFileName, _cmdlet._password, directoryOrFiles);
+                        compressor.CompressFilesEncrypted(archiveFileName, _cmdlet._password, filesToCompress);
                     } else {
-                        compressor.CompressFiles(archiveFileName, directoryOrFiles);
+                        compressor.CompressFiles(archiveFileName, filesToCompress);
                     }
                 }
-                if (directoryOrFiles.Any(path => new DirectoryInfo(path).Exists)) {
-                    if (directoryOrFiles.Length > 1) {
-                        throw new ArgumentException("Only one directory allowed as input");
-                    }
-                    var recursion = !_cmdlet.DisableRecursion.IsPresent;
-                    if (_cmdlet.Filter != null) {
-                        if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, _cmdlet.Filter, recursion);
-                        } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, _cmdlet.Filter, recursion);
-                        }
-                    } else {
-                        if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, null, recursion);
-                        } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, null, recursion);
-                        }
-                    }
-                }
-
+                
                 WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
                 Write("Compression finished");
             }

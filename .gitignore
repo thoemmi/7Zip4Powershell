@@ -7,5 +7,6 @@ _ReSharper*
 [Oo]bj
 
 *.nupkg
-/.vs
+# /.vs* as opposed to /.vs will ingore both Visual Studio as well as Visual Studio Code/Codium
+/.vs*  
 /Module
