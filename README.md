@@ -58,7 +58,7 @@ Get-7ZipInformation
 
 It works with both x86 and x64 and uses [SevenZipSharp](https://sevenzipsharp.codeplex.com/) as a wrapper around 7zip’s API.
 
-[Jason Fossen](https://github.com/JasonFossen) wrote the article [PowerShell 7-Zip Module Versus Compress-Archive with Encryption](https://cyber-defense.sans.org/blog/2016/06/06/powershell-7-zip-compress-archive-encryption)
+[Jason Fossen](https://github.com/JasonFossen) wrote the article [PowerShell 7-Zip Module Versus Compress-Archive with Encryption](https://www.sans.org/blog/powershell-7-zip-module-versus-compress-archive-with-encryption/)
 where he describes some usage scenarios with 7Zip4PowerShell.
 
 ## Where to get it
