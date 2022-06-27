@@ -28,7 +28,7 @@ Expand-7Zip
 
 Compress-7Zip
     [-ArchiveFileName] <string>
-    [-Path] <string[]>
+    [-Path] <string>
     [[-Filter] <string>]
     [-OutputPath] <string>
     [-Format <OutputFormat> {Auto | SevenZip | Zip | GZip | BZip2 | Tar | XZ}]
@@ -88,7 +88,6 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ### vNext
 
-* Changes the `Path` parameter of `Compress-7Zip` to accept a list, so multiple files and/or directories can be passed in a single call (contributed by [@mattiasmaahl](https://github.com/mattiasmaahl) in [#76](https://github.com/thoemmi/7Zip4Powershell/pull/76))
 * Updates 7-Zip libraries to 22.00 (contributed by [@kborowinski](https://github.com/kborowinski) in [#80](https://github.com/thoemmi/7Zip4Powershell/pull/80))
 * Fixes broken link in readme (contributed by [@Mike-Crowley](https://github.com/Mike-Crowley) in [#77](https://github.com/thoemmi/7Zip4Powershell/pull/77))
 
