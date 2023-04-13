@@ -36,6 +36,9 @@ Compress-7Zip
     [-CompressionMethod <CompressionMethod> {Copy | Deflate | Deflate64 | BZip2 | Lzma | Lzma2 | Ppmd | Default}]
     [-Password <string>] | [-SecurePassword <securestring>]
     [-CustomInitialization <ScriptBlock>]
+    [-TempFolder <string>]
+    [-IncludeHidden]
+    [-IncludeSystem
     [-EncryptFilenames]
     [-VolumeSize <int>]
     [-FlattenDirectoryStructure]
@@ -85,6 +88,11 @@ Compress-7Zip -Path . -ArchiveFileName demo.7z -CustomInitialization $initScript
 A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm).
 
 ## Changelog
+
+### [v2.3](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v2.3)
+
+* Updates 7-Zip libraries to 22.01 and NuGet packages (contributed by [@kborowinski](https://github.com/kborowinski) in [#84](https://github.com/thoemmi/7Zip4Powershell/pull/84))
+* Adds `TempFolder` parameter to `Compress-7Zip` (requested in [#78](https://github.com/thoemmi/7Zip4Powershell/issues/78))
 
 ### [v2.2](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v2.2)
 

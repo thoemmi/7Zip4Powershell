@@ -55,6 +55,10 @@ namespace SevenZip4PowerShell {
         [Parameter(HelpMessage = "Allows setting additional parameters on SevenZipCompressor")]
         public ScriptBlock CustomInitialization { get; set; }
 
+        [Parameter(HelpMessage = "The temporary folder path; if not specified, %TEMP% will be used")]
+        [CanBeNull]
+        public string TempFolder { get; set; }
+
         [Parameter(HelpMessage = "Enables encrypting filenames when using the 7z format")]
         public SwitchParameter EncryptFilenames { get; set; }
 
@@ -177,6 +181,10 @@ namespace SevenZip4PowerShell {
                     PreserveDirectoryRoot = _cmdlet.PreserveDirectoryRoot.IsPresent,
                     CompressionMode = _cmdlet.Append.IsPresent ? CompressionMode.Append : CompressionMode.Create
                 };
+                
+                if (!string.IsNullOrEmpty(_cmdlet.TempFolder)) {
+                    compressor.TempFolderPath = _cmdlet.TempFolder;
+                }
 
                 _cmdlet.CustomInitialization?.Invoke(compressor);
 
