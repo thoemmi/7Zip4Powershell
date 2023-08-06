@@ -89,6 +89,10 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
+### [v2.4](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v2.4)
+
+* Updates 7-Zip libraries to 23.01 (contributed by [@kborowinski](https://github.com/kborowinski) in [#85](https://github.com/thoemmi/7Zip4Powershell/pull/85))
+
 ### [v2.3](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v2.3)
 
 * Updates 7-Zip libraries to 22.01 and NuGet packages (contributed by [@kborowinski](https://github.com/kborowinski) in [#84](https://github.com/thoemmi/7Zip4Powershell/pull/84))
