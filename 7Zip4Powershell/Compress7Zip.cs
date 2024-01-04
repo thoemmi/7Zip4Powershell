@@ -229,18 +229,26 @@ namespace SevenZip4PowerShell {
                     .Select(System.IO.Path.GetFullPath).ToArray();
                 var archiveFileName = System.IO.Path.GetFullPath(System.IO.Path.Combine(outputPath, System.IO.Path.GetFileName(_cmdlet.ArchiveFileName)));
 
+                var threadId = Environment.CurrentManagedThreadId;
                 var activity = directoryOrFiles.Length > 1
-                    ? $"Compressing {directoryOrFiles.Length} Files to {archiveFileName}"
-                    : $"Compressing {directoryOrFiles[0]} to {archiveFileName}";
+                    ? $"Compressing {directoryOrFiles.Length} files to \"{archiveFileName}\""
+                    : $"Compressing \"{directoryOrFiles[0]}\" to \"{archiveFileName}\"";
 
                 var currentStatus = "Compressing";
+
+                // Reuse ProgressRecord instance per worker thread in order to avoid NullReferenceException on PowerShell 7.4
+                Progress = new ProgressRecord(threadId, activity, currentStatus) { PercentComplete = 0 };
+
                 compressor.FilesFound += (sender, args) =>
                     Write($"{args.Value} files found for compression");
-                compressor.Compressing += (sender, args) =>
-                    WriteProgress(new ProgressRecord(0, activity, currentStatus) { PercentComplete = args.PercentDone });
+                compressor.Compressing += (sender, args) => {
+                    Progress.PercentComplete = args.PercentDone;
+                    WriteProgress(Progress);
+                };
+
                 compressor.FileCompressionStarted += (sender, args) => {
                     currentStatus = $"Compressing {args.FileName}";
-                    Write($"Compressing {args.FileName}");
+                    Write($"Compressing \"{args.FileName}\"");
                 };
 
                 if (directoryOrFiles.Any(path => new FileInfo(path).Exists)) {
@@ -274,8 +282,11 @@ namespace SevenZip4PowerShell {
                     }
                 }
 
-                WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
+                Progress.RecordType = ProgressRecordType.Completed;
+                WriteProgress(Progress);
+
                 Write("Compression finished");
+                IsCompleted = true;
             }
         }
     }

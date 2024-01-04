@@ -62,24 +62,34 @@ namespace SevenZip4PowerShell {
                 var targetPath = new FileInfo(Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.TargetPath)).FullName;
                 var archiveFileName = new FileInfo(Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.ArchiveFileName)).FullName;
 
-                var activity = $"Extracting {Path.GetFileName(archiveFileName)} to {targetPath}";
+                var threadId = Environment.CurrentManagedThreadId;
+                var activity = $"Extracting \"{Path.GetFileName(archiveFileName)}\" to \"{targetPath}\"";
                 var statusDescription = "Extracting";
 
-                Write($"Extracting archive {archiveFileName}");
-                WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = 0 });
+                Write($"Extracting archive \"{archiveFileName}\"");
+
+                // Reuse ProgressRecord instance per worker thread in order to avoid NullReferenceException on PowerShell 7.4
+                Progress = new ProgressRecord(threadId, activity, statusDescription) { PercentComplete = 0};
+                WriteProgress(Progress);
 
                 using (var extractor = CreateExtractor(archiveFileName)) {
-                    extractor.Extracting += (sender, args) =>
-                        WriteProgress(new ProgressRecord(0, activity, statusDescription) { PercentComplete = args.PercentDone });
+                    extractor.Extracting += (sender, args) => {
+                        Progress.PercentComplete = args.PercentDone;
+                        WriteProgress(Progress);
+                    };
+
                     extractor.FileExtractionStarted += (sender, args) => {
-                        statusDescription = $"Extracting file {args.FileInfo.FileName}";
+                        statusDescription = $"Extracting file \"{args.FileInfo.FileName}\"";
                         Write(statusDescription);
                     };
                     extractor.ExtractArchive(targetPath);
                 }
 
-                WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
+                Progress.RecordType = ProgressRecordType.Completed;
+                WriteProgress(Progress);
+
                 Write("Extraction finished");
+                IsCompleted = true;
             }
 
             private SevenZipExtractor CreateExtractor(string archiveFileName) {
