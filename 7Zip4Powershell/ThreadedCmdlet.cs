@@ -48,7 +48,7 @@ namespace SevenZip4PowerShell {
                 try {
                     worker.Execute();
                 } catch (Exception ex) {
-					worker.Queue.Add(new ErrorRecord(ex, "7Zip4PowerShellException", ErrorCategory.NotSpecified, worker));
+                    worker.Queue.Add(new ErrorRecord(ex, "7Zip4PowerShellException", ErrorCategory.NotSpecified, worker));
                 }
                 finally {
                     worker.Queue.CompleteAdding();
