@@ -40,7 +40,7 @@ namespace SevenZip4PowerShell {
                 worker.Progress.RecordType = ProgressRecordType.Completed;
                 WriteProgress(worker.Progress);
             } catch (NullReferenceException) {
-                // Possible race condition on PowerShell 7.4.0 where null reference exception is thrown when completing ProgressPane
+                // Possible bug in PowerShell 7.4.0 leading to a null reference exception being thrown on ProgressPane completion
                 // This is not happening on PowerShell 5.1
             }
         }
