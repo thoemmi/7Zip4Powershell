@@ -35,11 +35,13 @@ namespace SevenZip4PowerShell {
 
             _thread.Join();
 
-            // In case of worker thread exception hide the remaining progress pane
-            if (!worker.IsCompleted)
-            {
+            try {
+                worker.Progress.StatusDescription = "Finished";
                 worker.Progress.RecordType = ProgressRecordType.Completed;
                 WriteProgress(worker.Progress);
+            } catch (NullReferenceException) {
+                // Possible race condition on PowerShell 7.4.0 where null reference exception is thrown when completing ProgressPane
+                // This is not happening on PowerShell 5.1
             }
         }
 
@@ -65,8 +67,6 @@ namespace SevenZip4PowerShell {
 
     public abstract class CmdletWorker {
         public BlockingCollection<object> Queue { get; set; }
-
-        public bool IsCompleted { get; set; } = false;
 
         public ProgressRecord Progress { get; set; }
 

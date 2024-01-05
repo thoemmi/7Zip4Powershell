@@ -62,15 +62,13 @@ namespace SevenZip4PowerShell {
                 var targetPath = new FileInfo(Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.TargetPath)).FullName;
                 var archiveFileName = new FileInfo(Path.Combine(_cmdlet.SessionState.Path.CurrentFileSystemLocation.Path, _cmdlet.ArchiveFileName)).FullName;
 
-                var threadId = Environment.CurrentManagedThreadId;
                 var activity = $"Extracting \"{Path.GetFileName(archiveFileName)}\" to \"{targetPath}\"";
                 var statusDescription = "Extracting";
 
                 Write($"Extracting archive \"{archiveFileName}\"");
 
-                // Reuse ProgressRecord instance per worker thread in order to avoid NullReferenceException on PowerShell 7.4
-                Progress = new ProgressRecord(threadId, activity, statusDescription) { PercentComplete = 0};
-                WriteProgress(Progress);
+                // Reuse ProgressRecord instance insead of creating new one on each progress update
+                Progress = new ProgressRecord(Environment.CurrentManagedThreadId, activity, statusDescription) { PercentComplete = 0};
 
                 using (var extractor = CreateExtractor(archiveFileName)) {
                     extractor.Extracting += (sender, args) => {
@@ -85,11 +83,7 @@ namespace SevenZip4PowerShell {
                     extractor.ExtractArchive(targetPath);
                 }
 
-                Progress.RecordType = ProgressRecordType.Completed;
-                WriteProgress(Progress);
-
                 Write("Extraction finished");
-                IsCompleted = true;
             }
 
             private SevenZipExtractor CreateExtractor(string archiveFileName) {
