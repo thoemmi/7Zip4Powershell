@@ -30,7 +30,6 @@ namespace SevenZip4PowerShell {
         public string Path { get; set; }
 
         [Parameter(Position = 2, Mandatory = false, HelpMessage = "The filter to be applied if Path points to a directory")]
-        //public string Filter { get; set; } = "*";
         public string Filter { get; set; }
 
         [Parameter(HelpMessage = "Output path for a compressed archive")]
