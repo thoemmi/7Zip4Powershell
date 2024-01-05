@@ -260,15 +260,12 @@ namespace SevenZip4PowerShell {
                     } else {
                         compressor.CompressFiles(archiveFileName, directoryOrFiles);
                     }
-                }
-                if (directoryOrFiles.Any(path => new DirectoryInfo(path).Exists)) {
+                } else if (directoryOrFiles.Any(path => new DirectoryInfo(path).Exists)) {
                     if (directoryOrFiles.Length > 1) {
                         throw new ArgumentException("Only one directory allowed as input");
                     }
-
                     var recursion = !_cmdlet.DisableRecursion.IsPresent;
                     var filter = string.IsNullOrWhiteSpace(_cmdlet.Filter) ? "*" : _cmdlet.Filter;
-
                     if (HasPassword) {
                         compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, filter, recursion);
                     } else {

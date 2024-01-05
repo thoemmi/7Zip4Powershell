@@ -68,7 +68,7 @@ namespace SevenZip4PowerShell {
                 Write($"Extracting archive \"{archiveFileName}\"");
 
                 // Reuse ProgressRecord instance insead of creating new one on each progress update
-                Progress = new ProgressRecord(Environment.CurrentManagedThreadId, activity, statusDescription) { PercentComplete = 0};
+                Progress = new ProgressRecord(Environment.CurrentManagedThreadId, activity, statusDescription) { PercentComplete = 0 };
 
                 using (var extractor = CreateExtractor(archiveFileName)) {
                     extractor.Extracting += (sender, args) => {
