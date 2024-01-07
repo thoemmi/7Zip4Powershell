@@ -30,7 +30,7 @@ namespace SevenZip4PowerShell {
         public string Path { get; set; }
 
         [Parameter(Position = 2, Mandatory = false, HelpMessage = "The filter to be applied if Path points to a directory")]
-        public string Filter { get; set; } = "*";
+        public string Filter { get; set; }
 
         [Parameter(HelpMessage = "Output path for a compressed archive")]
         public string OutputPath { get; set; }
@@ -230,17 +230,24 @@ namespace SevenZip4PowerShell {
                 var archiveFileName = System.IO.Path.GetFullPath(System.IO.Path.Combine(outputPath, System.IO.Path.GetFileName(_cmdlet.ArchiveFileName)));
 
                 var activity = directoryOrFiles.Length > 1
-                    ? $"Compressing {directoryOrFiles.Length} Files to {archiveFileName}"
-                    : $"Compressing {directoryOrFiles[0]} to {archiveFileName}";
+                    ? $"Compressing {directoryOrFiles.Length} files to \"{archiveFileName}\""
+                    : $"Compressing \"{directoryOrFiles[0]}\" to \"{archiveFileName}\"";
 
                 var currentStatus = "Compressing";
+
+                // Reuse ProgressRecord instance insead of creating new one on each progress update
+                Progress = new ProgressRecord(Environment.CurrentManagedThreadId, activity, currentStatus) { PercentComplete = 0 };
+
                 compressor.FilesFound += (sender, args) =>
                     Write($"{args.Value} files found for compression");
-                compressor.Compressing += (sender, args) =>
-                    WriteProgress(new ProgressRecord(0, activity, currentStatus) { PercentComplete = args.PercentDone });
+                compressor.Compressing += (sender, args) => {
+                    Progress.PercentComplete = args.PercentDone;
+                    WriteProgress(Progress);
+                };
+
                 compressor.FileCompressionStarted += (sender, args) => {
                     currentStatus = $"Compressing {args.FileName}";
-                    Write($"Compressing {args.FileName}");
+                    Write($"Compressing \"{args.FileName}\"");
                 };
 
                 if (directoryOrFiles.Any(path => new FileInfo(path).Exists)) {
@@ -253,28 +260,19 @@ namespace SevenZip4PowerShell {
                     } else {
                         compressor.CompressFiles(archiveFileName, directoryOrFiles);
                     }
-                }
-                if (directoryOrFiles.Any(path => new DirectoryInfo(path).Exists)) {
+                } else if (directoryOrFiles.Any(path => new DirectoryInfo(path).Exists)) {
                     if (directoryOrFiles.Length > 1) {
                         throw new ArgumentException("Only one directory allowed as input");
                     }
                     var recursion = !_cmdlet.DisableRecursion.IsPresent;
-                    if (_cmdlet.Filter != null) {
-                        if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, _cmdlet.Filter, recursion);
-                        } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, _cmdlet.Filter, recursion);
-                        }
+                    var filter = string.IsNullOrWhiteSpace(_cmdlet.Filter) ? "*" : _cmdlet.Filter;
+                    if (HasPassword) {
+                        compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, filter, recursion);
                     } else {
-                        if (HasPassword) {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, _cmdlet._password, null, recursion);
-                        } else {
-                            compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, null, recursion);
-                        }
+                        compressor.CompressDirectory(directoryOrFiles[0], archiveFileName, null, filter, recursion);
                     }
                 }
 
-                WriteProgress(new ProgressRecord(0, activity, "Finished") { RecordType = ProgressRecordType.Completed });
                 Write("Compression finished");
             }
         }

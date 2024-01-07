@@ -21,18 +21,28 @@ namespace SevenZip4PowerShell {
             foreach (var o in queue.GetConsumingEnumerable()) {
                 var record = o as ProgressRecord;
                 var errorRecord = o as ErrorRecord;
+
                 if (record != null) {
                     WriteProgress(record);
                 } else if (errorRecord != null) {
                     WriteError(errorRecord);
-                } else if (o is string) {
-                    WriteVerbose((string) o);
+                } else if (o is string s) {
+                    WriteVerbose(s);
                 } else {
                     WriteObject(o);
                 }
             }
 
             _thread.Join();
+
+            try {
+                worker.Progress.StatusDescription = "Finished";
+                worker.Progress.RecordType = ProgressRecordType.Completed;
+                WriteProgress(worker.Progress);
+            } catch (NullReferenceException) {
+                // Possible bug in PowerShell 7.4.0 leading to a null reference exception being thrown on ProgressPane completion
+                // This is not happening on PowerShell 5.1
+            }
         }
 
         private static Thread StartBackgroundThread(CmdletWorker worker) {
@@ -40,8 +50,7 @@ namespace SevenZip4PowerShell {
                 try {
                     worker.Execute();
                 } catch (Exception ex) {
-					worker.Queue.Add(new ProgressRecord(0, "err01", "Exception") { RecordType = ProgressRecordType.Completed });
-					worker.Queue.Add(new ErrorRecord(ex, "err01", ErrorCategory.NotSpecified, worker));
+                    worker.Queue.Add(new ErrorRecord(ex, "7Zip4PowerShellException", ErrorCategory.NotSpecified, worker));
                 }
                 finally {
                     worker.Queue.CompleteAdding();
@@ -58,6 +67,8 @@ namespace SevenZip4PowerShell {
 
     public abstract class CmdletWorker {
         public BlockingCollection<object> Queue { get; set; }
+
+        public ProgressRecord Progress { get; set; }
 
         protected void Write(string text) {
             Queue.Add(text);
