@@ -8,4 +8,5 @@ _ReSharper*
 
 *.nupkg
 /.vs
+/.idea
 /Module

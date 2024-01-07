@@ -35,6 +35,7 @@ Compress-7Zip
     [-CompressionLevel <CompressionLevel> {None | Fast | Low | Normal | High | Ultra}]
     [-CompressionMethod <CompressionMethod> {Copy | Deflate | Deflate64 | BZip2 | Lzma | Lzma2 | Ppmd | Default}]
     [-Password <string>] | [-SecurePassword <securestring>]
+    [-EncryptionMethod <ZipEncryptionMethod> {ZipCrypto | Aes128 | Aes192 | Aes256}]
     [-CustomInitialization <ScriptBlock>]
     [-TempFolder <string>]
     [-IncludeHidden]
@@ -59,7 +60,7 @@ Get-7ZipInformation
     [<CommonParameters>]
 ```
 
-It works with both x86 and x64 and uses [SevenZipSharp](https://sevenzipsharp.codeplex.com/) as a wrapper around 7zip’s API.
+It works with both x86 and x64 and uses [SevenZipSharp](https://github.com/squid-box/SevenZipSharp) as a wrapper around 7zip’s API.
 
 [Jason Fossen](https://github.com/JasonFossen) wrote the article [PowerShell 7-Zip Module Versus Compress-Archive with Encryption](https://www.sans.org/blog/powershell-7-zip-module-versus-compress-archive-with-encryption/)
 where he describes some usage scenarios with 7Zip4PowerShell.
@@ -88,6 +89,11 @@ Compress-7Zip -Path . -ArchiveFileName demo.7z -CustomInitialization $initScript
 A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm).
 
 ## Changelog
+
+### [vNext]
+
+* Workaround for NullReferenceException when extracting multiple 7zip archives simultaneously on PS 7.4.0 (contributed by [@kborowinski](https://github.com/kborowinski) in [#89](https://github.com/thoemmi/7Zip4Powershell/pull/89))
+* Adds new parameter `EncryptionMethod` to `Compress-7Zip`
 
 ### [v2.4](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v2.4)
 
