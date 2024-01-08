@@ -14,6 +14,7 @@ namespace SevenZip4PowerShell {
         Zip,
         GZip,
         BZip2,
+        Wim,
         Tar,
         XZ
     }
@@ -122,6 +123,8 @@ namespace SevenZip4PowerShell {
                             return OutArchiveFormat.GZip;
                         case ".bz2":
                             return OutArchiveFormat.BZip2;
+                        case ".wim":
+                            return OutArchiveFormat.Wim;
                         case ".tar":
                             return OutArchiveFormat.Tar;
                         case ".xz":
@@ -137,6 +140,8 @@ namespace SevenZip4PowerShell {
                     return OutArchiveFormat.GZip;
                 case OutputFormat.BZip2:
                     return OutArchiveFormat.BZip2;
+                case OutputFormat.Wim:
+                    return OutArchiveFormat.Wim;
                 case OutputFormat.Tar:
                     return OutArchiveFormat.Tar;
                 case OutputFormat.XZ:
