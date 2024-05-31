@@ -90,10 +90,13 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
-### [vNext]
+### [v2.5]
 
 * Workaround for NullReferenceException when extracting multiple 7zip archives simultaneously on PS 7.4.0 (contributed by [@kborowinski](https://github.com/kborowinski) in [#89](https://github.com/thoemmi/7Zip4Powershell/pull/89))
 * Adds new parameter `EncryptionMethod` to `Compress-7Zip`
+* Updates of 7-Zip libraries to version 24.06 (support for ZSTD decompression ) (contributed by [@kborowinski](https://github.com/kborowinski) in [#90](https://github.com/thoemmi/7Zip4Powershell/pull/90))
+* Updates Squid-Box.SevenZipSharp nuget package to version 1.6.2.24 (final release -the project has been archived) (contributed by [@kborowinski](https://github.com/kborowinski) in [#90](https://github.com/thoemmi/7Zip4Powershell/pull/90))
+* Adds support for Wim (contributed by [@pysj](https://github.com/pysj) in [#87](https://github.com/thoemmi/7Zip4Powershell/pull/87))
 
 ### [v2.4](https://github.com/thoemmi/7Zip4Powershell/releases/tag/v2.4)
 
