@@ -90,6 +90,10 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
+### [v2.6]
+
+* Updates of 7-Zip libraries to version 24.08 (contributed by [@kborowinski](https://github.com/kborowinski) in [#91](https://github.com/thoemmi/7Zip4Powershell/pull/91))
+
 ### [v2.5]
 
 * Workaround for NullReferenceException when extracting multiple 7zip archives simultaneously on PS 7.4.0 (contributed by [@kborowinski](https://github.com/kborowinski) in [#89](https://github.com/thoemmi/7Zip4Powershell/pull/89))
