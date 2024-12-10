@@ -7,10 +7,6 @@ param(
 	[string]$NuGetApiKey
 )
 
-# The environment variable MSBUILDSINGLELOADCONTEXT must be set to get GitVersion task working with MSBuild 16.5
-# See https://github.com/GitTools/GitVersion/issues/2063
-$env:MSBUILDSINGLELOADCONTEXT = 1
-
 # compile
 & dotnet build --configuration $Configuration
 
