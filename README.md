@@ -90,6 +90,10 @@ A list of all custom parameters can be found [here](https://sevenzip.osdn.jp/chm
 
 ## Changelog
 
+### [v2.7]
+
+* Updates of 7-Zip libraries to version 24.09 (contributed by [@kborowinski](https://github.com/kborowinski) in [#92](https://github.com/thoemmi/7Zip4Powershell/pull/92))
+
 ### [v2.6]
 
 * Updates of 7-Zip libraries to version 24.08 (contributed by [@kborowinski](https://github.com/kborowinski) in [#91](https://github.com/thoemmi/7Zip4Powershell/pull/91))
