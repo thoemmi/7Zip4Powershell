@@ -4,8 +4,7 @@ Powershell module for creating and extracting 7-Zip archives supporting Powershe
 
 ![Screenshot](https://raw.githubusercontent.com/thoemmi/7Zip4Powershell/master/Assets/compression.gif)
 
-
-> # Note
+> [!IMPORTANT]
 > Please note that this repository is not maintained anymore. I've created it a couple
 > of years ago to fit my own needs (just compressing a single folder). I love that lots
 > of other users find my package helpful.
