@@ -75,10 +75,14 @@ namespace SevenZip4PowerShell {
                         Progress.PercentComplete = args.PercentDone;
                         WriteProgress(Progress);
                     };
-
                     extractor.FileExtractionStarted += (sender, args) => {
                         statusDescription = $"Extracting file \"{args.FileInfo.FileName}\"";
                         Write(statusDescription);
+                    };
+                    extractor.ExtractionFinished += (sender, args) => {
+                        Progress.StatusDescription = "Finished";
+                        Progress.RecordType = ProgressRecordType.Completed;
+                        WriteProgress(Progress);
                     };
                     extractor.ExtractArchive(targetPath);
                 }
