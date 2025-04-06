@@ -48,8 +48,10 @@ jobs:
         (((Get-Content $psd1File -Raw) -replace '\$version\$',$version) -replace '\$prerelease\$',$prerelease) | Set-Content $psd1File
     
     - name: Publish to PowerShell Gallery
+      if: startsWith(github.ref, 'refs/tags/v')
       shell: pwsh
       run: |
         Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        
