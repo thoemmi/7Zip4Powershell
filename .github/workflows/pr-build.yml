@@ -1,0 +1,30 @@
+name: PR Build
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Required for GitVersion
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+    
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v1
+      with:
+        versionSpec: '6.1.0'
+    
+    - name: Determine Version
+      uses: gittools/actions/gitversion/execute@v1
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore

@@ -1,0 +1,55 @@
+name: Release and Publish
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Required for GitVersion
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+    
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v1
+      with:
+        versionSpec: '6.1.0'
+    
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v1
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Prepare Module
+      shell: pwsh
+      run: |
+        # Create module folder
+        $moduleTargetPath = Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell"
+        New-Item $moduleTargetPath -ItemType Directory -Force
+        
+        # Copy files
+        Copy-Item -Path (Join-Path $env:GITHUB_WORKSPACE "7Zip4Powershell" "bin" "Release" "netstandard2.0" "*.*") -Exclude "JetBrains.Annotations.dll" -Destination $moduleTargetPath
+        
+        # Update version in PSD1
+        $psd1File = Join-Path $moduleTargetPath "7Zip4PowerShell.psd1"
+        $version = "${{ steps.gitversion.outputs.major }}.${{ steps.gitversion.outputs.minor }}.${{ steps.gitversion.outputs.patch }}"
+        $prerelease = "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
+        (((Get-Content $psd1File -Raw) -replace '\$version\$',$version) -replace '\$prerelease\$',$prerelease) | Set-Content $psd1File
+    
+    - name: Publish to PowerShell Gallery
+      shell: pwsh
+      run: |
+        Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
