@@ -16,12 +16,12 @@ jobs:
       uses: actions/setup-dotnet@v4
     
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v1
+      uses: gittools/actions/gitversion/setup@v3.2.0
       with:
-        versionSpec: '6.1.0'
+        versionSpec: '6.2.x'
     
     - name: Determine Version
-      uses: gittools/actions/gitversion/execute@v1
+      uses: gittools/actions/gitversion/execute@v3.2.0
     
     - name: Restore dependencies
       run: dotnet restore
