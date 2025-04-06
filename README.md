@@ -70,6 +70,7 @@ where he describes some usage scenarios with 7Zip4PowerShell.
 
 
 [![https://www.powershellgallery.com/packages/7Zip4Powershell](https://img.shields.io/powershellgallery/v/7Zip4Powershell)](https://www.powershellgallery.com/packages/7Zip4Powershell)
+[![Build Status](https://github.com/thoemmi/7Zip4Powershell/actions/workflows/pr-build.yml/badge.svg)](https://github.com/thoemmi/7Zip4Powershell/actions/workflows/pr-build.yml)
 
 ## Customization
 
