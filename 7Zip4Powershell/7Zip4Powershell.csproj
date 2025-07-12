@@ -20,7 +20,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\Libs\7zARM64.dll">
-      <Link>7z64ARM.dll</Link>
+      <Link>7zARM64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="7Zip4Powershell.psd1">
