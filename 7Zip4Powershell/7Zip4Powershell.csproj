@@ -6,6 +6,8 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     
     <GitVersionTargetFramework>net8.0</GitVersionTargetFramework>
+
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +17,10 @@
     </None>
     <None Include="..\Libs\7z64.dll">
       <Link>7z64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Libs\7zARM64.dll">
+      <Link>7zARM64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="7Zip4Powershell.psd1">

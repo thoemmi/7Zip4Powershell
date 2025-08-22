@@ -9,7 +9,12 @@ namespace SevenZip4PowerShell {
 
         private static string AssemblyPath => Path.GetDirectoryName(typeof(Utils).Assembly.Location);
 
-        private static string SevenZipLibraryName => Environment.Is64BitProcess ? "7z64.dll" : "7z.dll";
+        private static string SevenZipLibraryName => RuntimeInformation.ProcessArchitecture switch {
+            Architecture.X64 => "7z64.dll",
+            Architecture.X86 => "7z.dll",
+            Architecture.Arm64 => "7zARM64.dll",
+            _ => throw new PlatformNotSupportedException("Unsupported architecture: " + RuntimeInformation.ProcessArchitecture)
+        };
 
         public static string SecureStringToString(SecureString value) {
             var valuePtr = IntPtr.Zero;
