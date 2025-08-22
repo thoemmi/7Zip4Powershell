@@ -3,7 +3,8 @@ name: Release and Publish
 on:
   push:
     branches: [ master ]
-  workflow_dispatch:  # Allows manual triggering
+    tags: [ 'v*' ]      # Trigger on version tags
+  workflow_dispatch:    # Allows manual triggering
 
 jobs:
   build-and-publish:
