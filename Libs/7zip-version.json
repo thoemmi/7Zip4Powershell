@@ -1,27 +1,27 @@
 {
-  "version": "24.09",
   "dlls": {
+    "7z64.dll": {
+      "sha256": "5BD20FB38499D95C39594F41D4781B6181B3304B7F1F4D06B0182F514E7EAA74",
+      "size": 1906176,
+      "architecture": "x64",
+      "source": "https://www.7-zip.org/a/7z2501-x64.exe",
+      "version": "25.01"
+    },
     "7z.dll": {
-      "version": "24.09",
-      "size": 1314816,
-      "sha256": "8DD93ADC6E06CB7A404D259E59B644AD49B69A5D4215DE607BAF659FABFB2C4C",
+      "sha256": "51075AF59F6696D5DC5446BA39FABFD0022628CDCFA41C80E7CB66E3BF4EE55D",
+      "size": 1316352,
       "architecture": "x86",
-      "source": "https://www.7-zip.org/a/7z2409.exe"
+      "source": "https://www.7-zip.org/a/7z2501.exe",
+      "version": "25.01"
     },
     "7zARM64.dll": {
-      "version": "24.09",
-      "size": 1774080,
-      "sha256": "EE151816E957348E4301D397CDEFBCCB4AED1A322E60032050BDA8A51BDD6F82",
+      "sha256": "0D60194097B36767D5D26D5A916E56F8072E69DE61287A8D410B7FC88A2F64D3",
+      "size": 1768960,
       "architecture": "ARM64",
-      "source": "https://www.7-zip.org/a/7z2409-arm64.exe"
-    },
-    "7z64.dll": {
-      "version": "24.09",
-      "size": 1907712,
-      "sha256": "882063948D675EE41B5AE68DB3E84879350EC81CF88D15B9BABF2FA08E332863",
-      "architecture": "x64",
-      "source": "https://www.7-zip.org/a/7z2409-x64.exe"
+      "source": "https://www.7-zip.org/a/7z2501-arm64.exe",
+      "version": "25.01"
     }
   },
-  "updated": "2025-12-31T14:35:19.7262056Z"
+  "updated": "2025-12-31T15:26:28.5036133Z",
+  "version": "25.01"
 }
