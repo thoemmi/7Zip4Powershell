@@ -1,0 +1,73 @@
+name: Update 7-Zip DLLs
+
+on:
+  schedule:
+    # Run every Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-and-update:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for 7-Zip updates
+        id: check
+        shell: pwsh
+        run: |
+          .\Scripts\Update-7ZipDlls.ps1 -CheckOnly -Verbose
+
+      - name: Download and extract updated DLLs
+        if: steps.check.outputs.update_available == 'true'
+        shell: pwsh
+        run: |
+          .\Scripts\Update-7ZipDlls.ps1 -Update -Verbose
+
+      - name: Create Pull Request
+        if: steps.check.outputs.update_available == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update 7-Zip libraries to ${{ steps.check.outputs.new_version }}"
+          title: "Update 7-Zip libraries to ${{ steps.check.outputs.new_version }}"
+          body: |
+            Automated update of 7-Zip native DLLs to version ${{ steps.check.outputs.new_version }}.
+
+            ## Changes
+            - Updated `7z.dll` (x86)
+            - Updated `7z64.dll` (x64)
+            - Updated `7zARM64.dll` (ARM64)
+            - Updated `License.txt` (copied from installer)
+            - Updated version tracking metadata (`Libs/7zip-version.json`)
+
+            ## Source
+            Downloaded from official 7-zip.org website:
+            - [Download page](https://www.7-zip.org/download.html)
+            - [7-Zip on SourceForge](https://sourceforge.net/projects/sevenzip/)
+
+            ## Verification Needed
+            Please verify the DLLs are valid by:
+            1. Building the project: `dotnet build --configuration Release`
+            2. Testing compression: `Compress-7Zip -Path test -ArchiveFileName test.7z`
+            3. Testing extraction: `Expand-7Zip -ArchiveFileName test.7z -TargetPath output`
+
+            ## DLL Checksums
+            The SHA256 checksums are documented in `Libs/7zip-version.json` for verification.
+
+            /cc @thoemmi @kborowinski
+          branch: update-7zip-${{ steps.check.outputs.new_version }}
+          delete-branch: true
+          labels: |
+            dependencies
+            automated
+          draft: false
