@@ -106,7 +106,7 @@ Describe "Compress-7Zip and Expand-7Zip" -Tags "Smoke" {
 
             # Verify both files exist (files are extracted directly without parent directory)
             Test-Path (Join-Path $extractPath "sample.txt") | Should -Be $true
-            Test-Path (Join-Path $extractPath "nested\nested-file.txt") | Should -Be $true
+            Test-Path (Join-Path $extractPath "nested" "nested-file.txt") | Should -Be $true
         }
     }
 
