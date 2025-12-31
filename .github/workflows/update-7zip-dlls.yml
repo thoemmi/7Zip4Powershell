@@ -47,7 +47,7 @@ jobs:
             - Updated `7z.dll` (x86)
             - Updated `7z64.dll` (x64)
             - Updated `7zARM64.dll` (ARM64)
-            - Updated `License.txt`
+            - Updated `License.txt` (copied from installer)
             - Updated version tracking metadata (`Libs/7zip-version.json`)
 
             ## Source

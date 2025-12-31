@@ -43,7 +43,7 @@ Automates downloading and updating native 7-Zip DLL files for all supported arch
    - Extracts native DLLs using self-extraction or 7-Zip
    - Validates DLL architecture by inspecting PE headers
    - Updates `Libs/` folder with new DLLs
-   - Updates copyright year in `License.txt`
+   - Copies `License.txt` from the installer
    - Updates version tracking in `Libs/7zip-version.json`
 
 ### Output for GitHub Actions
@@ -68,7 +68,7 @@ When an update is performed, the following files are modified:
 - `Libs/7z.dll` - x86 32-bit DLL
 - `Libs/7z64.dll` - x64 64-bit DLL
 - `Libs/7zARM64.dll` - ARM64 DLL
-- `Libs/License.txt` - Copyright year updated
+- `Libs/License.txt` - License from 7-Zip installer
 - `Libs/7zip-version.json` - Version metadata and checksums
 
 ### Testing

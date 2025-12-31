@@ -51,7 +51,6 @@ Set-StrictMode -Version Latest
 $script:RepoRoot = Split-Path -Parent $PSScriptRoot
 $script:LibsPath = Join-Path $RepoRoot "Libs"
 $script:VersionJsonPath = Join-Path $script:LibsPath "7zip-version.json"
-$script:LicensePath = Join-Path $script:LibsPath "License.txt"
 $script:TempPath = Join-Path $PSScriptRoot "temp"
 $script:DownloadRetries = 3
 $script:DownloadRetryDelay = 2
@@ -282,7 +281,8 @@ function Extract-DllFromInstaller {
     param(
         [string]$InstallerPath,
         [ValidateSet("x86", "x64", "ARM64")]
-        [string]$Architecture
+        [string]$Architecture,
+        [switch]$CopyLicense
     )
 
     $extractPath = Join-Path $script:TempPath "extract-$Architecture"
@@ -297,6 +297,9 @@ function Extract-DllFromInstaller {
     try {
         if ($WhatIf) {
             Write-Log "[WhatIf] Would extract DLL from: $InstallerPath" -Level WARN
+            if ($CopyLicense) {
+                Write-Log "[WhatIf] Would copy License.txt from installer" -Level WARN
+            }
             return (Join-Path $script:LibsPath $dllName)
         }
 
@@ -339,6 +342,20 @@ function Extract-DllFromInstaller {
         $targetPath = Join-Path $script:LibsPath $dllName
         Copy-Item -Path $dllPath -Destination $targetPath -Force
         Write-Log "DLL copied to: $targetPath" -Level SUCCESS
+
+        # Copy License.txt if requested (only once, from first extraction)
+        if ($CopyLicense) {
+            $extractedLicense = Get-ChildItem -Path $extractPath -Filter "License.txt" -Recurse -ErrorAction SilentlyContinue |
+                                Select-Object -First 1 -ExpandProperty FullName
+
+            if ($extractedLicense) {
+                $licensePath = Join-Path $script:LibsPath "License.txt"
+                Copy-Item -Path $extractedLicense -Destination $licensePath -Force
+                Write-Log "License.txt copied from installer" -Level SUCCESS
+            } else {
+                Write-Log "License.txt not found in installer" -Level WARN
+            }
+        }
 
         return $targetPath
     } catch {
@@ -500,8 +517,15 @@ try {
             # Download installer
             $installerPath = Download-7ZipInstaller -Version $latestVersion -Architecture $arch
 
-            # Extract DLL
-            $dllPath = Extract-DllFromInstaller -InstallerPath $installerPath -Architecture $arch
+            # Extract DLL (copy License.txt only from first extraction)
+            $extractParams = @{
+                InstallerPath = $installerPath
+                Architecture = $arch
+            }
+            if ($arch -eq "x86") {
+                $extractParams.CopyLicense = $true
+            }
+            $dllPath = Extract-DllFromInstaller @extractParams
 
             # Create metadata
             if (-not $WhatIf) {

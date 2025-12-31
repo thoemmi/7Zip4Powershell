@@ -77,7 +77,7 @@ The project uses a GitHub Actions workflow that:
   - `Libs/7z.dll` (x86)
   - `Libs/7z64.dll` (x64)
   - `Libs/7zARM64.dll` (ARM64)
-  - `Libs/License.txt` (copyright year)
+  - `Libs/License.txt` (copied from installer)
   - `Libs/7zip-version.json` (version tracking metadata)
 
 ### Manual Updates
