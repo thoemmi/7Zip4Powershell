@@ -16,3 +16,6 @@ Scripts/temp/
 Scripts/*.tmp
 Scripts/downloads/
 .claude/settings.local.json
+
+# Test data (auto-generated)
+Tests/TestData/

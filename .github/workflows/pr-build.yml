@@ -28,3 +28,7 @@ jobs:
     
     - name: Build
       run: dotnet build --configuration Release --no-restore
+
+    - name: Run Tests
+      shell: pwsh
+      run: .\Scripts\Test.ps1 -SkipBuild
