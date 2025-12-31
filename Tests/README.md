@@ -45,7 +45,7 @@ Copy-Item -Path "7Zip4Powershell\bin\Release\netstandard2.0\*.*" `
           -Destination "Module\7Zip4Powershell" -Force
 
 # Install Pester v5 if not already installed
-Install-Module -Name Pester -Force -SkipPublisherCheck -MinimumVersion 5.0.0
+Install-Module -Name Pester -Force -MinimumVersion 5.0.0
 
 # Run tests
 Invoke-Pester -Path .\Tests\7Zip4Powershell.Tests.ps1 -Output Detailed

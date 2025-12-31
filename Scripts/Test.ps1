@@ -116,7 +116,7 @@ try {
 
     if (-not $pesterModule) {
         Write-Host "Pester v5 not found. Installing..." -ForegroundColor Yellow
-        Install-Module -Name Pester -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Scope CurrentUser
+        Install-Module -Name Pester -Force -MinimumVersion 5.0.0 -Scope CurrentUser
 
         $pesterModule = Get-Module -Name Pester -ListAvailable |
                         Where-Object { $_.Version -ge [Version]'5.0.0' } |
