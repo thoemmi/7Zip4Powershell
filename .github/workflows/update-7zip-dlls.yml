@@ -40,6 +40,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Update 7-Zip libraries to ${{ steps.check.outputs.new_version }}"
           title: "Update 7-Zip libraries to ${{ steps.check.outputs.new_version }}"
+          assignees: thoemmi
           body: |
             Automated update of 7-Zip native DLLs to version ${{ steps.check.outputs.new_version }}.
 
@@ -63,8 +64,6 @@ jobs:
 
             ## DLL Checksums
             The SHA256 checksums are documented in `Libs/7zip-version.json` for verification.
-
-            /cc @thoemmi @kborowinski
           branch: update-7zip-${{ steps.check.outputs.new_version }}
           delete-branch: true
           labels: |
