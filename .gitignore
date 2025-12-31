@@ -10,3 +10,9 @@ _ReSharper*
 /.vs
 /.idea
 /Module
+
+# Script temporary files
+Scripts/temp/
+Scripts/*.tmp
+Scripts/downloads/
+.claude/settings.local.json
