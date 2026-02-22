@@ -54,7 +54,27 @@ The GitHub Actions workflow shows how to prepare the module for distribution:
 ```powershell
 # Copy built files to module directory (excluding JetBrains.Annotations.dll)
 Copy-Item -Path "7Zip4Powershell\bin\Release\netstandard2.0\*.*" -Exclude "JetBrains.Annotations.dll" -Destination "Module\7Zip4Powershell"
+
+# Replace version template variables in PSD1 (done automatically in CI)
+# The PSD1 contains $version$ and $prerelease$ placeholders replaced at release time
 ```
+
+**Note:** `7Zip4PowerShell.psd1` uses `$version$` and `$prerelease$` template variables. The release workflow replaces these from GitVersion outputs. For local use, the module loads fine without replacement.
+
+## Testing
+
+```powershell
+# Run all tests (builds, prepares module, installs Pester, runs tests)
+.\Scripts\Test.ps1
+
+# Skip rebuild if already built
+.\Scripts\Test.ps1 -SkipBuild
+
+# Debug configuration
+.\Scripts\Test.ps1 -Configuration Debug
+```
+
+Uses Pester v5. Tests cover: compress/expand, .7z/.zip/.tar.gz formats, password-protected archives (including SecureString), and content integrity. See `Tests/README.md` for full details. Expected CI runtime: < 30 seconds.
 
 ## Project Structure Notes
 
@@ -121,8 +141,9 @@ For more details, see `Scripts/README.md`.
 ## CI/CD
 
 The project uses GitHub Actions:
-- **PR Build** (`pr-build.yml`): Builds and validates pull requests
-- **Release Publish** (`release-publish.yml`): Builds and publishes to PowerShell Gallery when tagged
+- **PR Build** (`pr-build.yml`): Builds, runs tests on every PR targeting master
+- **Release and Publish** (`release-publish.yml`): Runs on every push to master and on manual dispatch; the `release` job (PowerShell Gallery publish + GitHub Release) only runs on `v*` tags
+- **Update 7-Zip DLLs** (`update-7zip-dlls.yml`): Scheduled Monday 2 AM UTC; creates PRs with updated native DLLs (see "7-Zip DLL Updates" section above)
 
 ## Important Notes
 
