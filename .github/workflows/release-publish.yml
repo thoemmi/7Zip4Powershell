@@ -76,6 +76,7 @@ jobs:
           -f tag_name=${{ github.ref_name }} `
           --jq '.body'
         if ([string]::IsNullOrWhiteSpace($notes)) { throw "Release notes generation returned empty content" }
+        $notes | Out-File -FilePath "release-notes.md" -Encoding utf8
         $delimiter = [System.Guid]::NewGuid().ToString()
         "notes<<$delimiter`n$notes`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
       env:
@@ -92,5 +93,5 @@ jobs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        body: ${{ steps.release_notes.outputs.notes }}
+        body_path: release-notes.md
         
