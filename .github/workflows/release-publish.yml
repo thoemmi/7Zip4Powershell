@@ -68,7 +68,6 @@ jobs:
         path: Module/7Zip4Powershell
 
     - name: Generate Release Notes
-      id: release_notes
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
@@ -76,21 +75,22 @@ jobs:
           -f tag_name=${{ github.ref_name }} `
           --jq '.body'
         if ([string]::IsNullOrWhiteSpace($notes)) { throw "Release notes generation returned empty content" }
-        $delimiter = [System.Guid]::NewGuid().ToString()
-        "notes<<$delimiter`n$notes`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+        $notes | Out-File -FilePath "release-notes.md" -Encoding utf8
       env:
         GH_TOKEN: ${{ github.token }}
 
     - name: Publish to PowerShell Gallery
       shell: pwsh
       run: |
-        Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY -ReleaseNotes $env:RELEASE_NOTES
+        $ErrorActionPreference = 'Stop'
+        $releaseNotes = Get-Content -Path "release-notes.md" -Raw -ErrorAction Stop
+        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.md' is empty or whitespace-only" }
+        Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY -ReleaseNotes $releaseNotes
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        RELEASE_NOTES: ${{ steps.release_notes.outputs.notes }}
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        body: ${{ steps.release_notes.outputs.notes }}
+        body_path: release-notes.md
         
