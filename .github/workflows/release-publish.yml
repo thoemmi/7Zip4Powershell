@@ -48,11 +48,31 @@ jobs:
         $prerelease = "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
         (((Get-Content $psd1File -Raw) -replace '\$version\$',$version) -replace '\$prerelease\$',$prerelease) | Set-Content $psd1File
     
+    - name: Generate Release Notes
+      if: startsWith(github.ref, 'refs/tags/v')
+      id: release_notes
+      shell: pwsh
+      run: |
+        $notes = gh api repos/${{ github.repository }}/releases/generate-notes `
+          -f tag_name=${{ github.ref_name }} `
+          --jq '.body'
+        $delimiter = [System.Guid]::NewGuid().ToString()
+        "notes<<$delimiter`n$notes`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      env:
+        GH_TOKEN: ${{ github.token }}
+
     - name: Publish to PowerShell Gallery
       if: startsWith(github.ref, 'refs/tags/v')
       shell: pwsh
       run: |
-        Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY
+        Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY -ReleaseNotes $env:RELEASE_NOTES
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        RELEASE_NOTES: ${{ steps.release_notes.outputs.notes }}
+
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
+      with:
+        body: ${{ steps.release_notes.outputs.notes }}
         
