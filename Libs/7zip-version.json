@@ -1,27 +1,27 @@
 {
+  "version": "26.00",
+  "updated": "2026-02-16T04:13:28.9827380Z",
   "dlls": {
     "7z64.dll": {
-      "sha256": "5BD20FB38499D95C39594F41D4781B6181B3304B7F1F4D06B0182F514E7EAA74",
-      "size": 1906176,
+      "version": "26.00",
+      "sha256": "BBD705E3B58CA7677C1E9E67473F166A6712DA034DCB567D571FBB67507A443F",
+      "size": 1908736,
       "architecture": "x64",
-      "source": "https://www.7-zip.org/a/7z2501-x64.exe",
-      "version": "25.01"
-    },
-    "7z.dll": {
-      "sha256": "51075AF59F6696D5DC5446BA39FABFD0022628CDCFA41C80E7CB66E3BF4EE55D",
-      "size": 1316352,
-      "architecture": "x86",
-      "source": "https://www.7-zip.org/a/7z2501.exe",
-      "version": "25.01"
+      "source": "https://www.7-zip.org/a/7z2600-x64.exe"
     },
     "7zARM64.dll": {
-      "sha256": "0D60194097B36767D5D26D5A916E56F8072E69DE61287A8D410B7FC88A2F64D3",
-      "size": 1768960,
+      "version": "26.00",
+      "sha256": "B5AC136ED5D8D1B67FE10C50B2A0C9CF6C01F9CCC3B082BC8411AC728F62D1DE",
+      "size": 1769472,
       "architecture": "ARM64",
-      "source": "https://www.7-zip.org/a/7z2501-arm64.exe",
-      "version": "25.01"
+      "source": "https://www.7-zip.org/a/7z2600-arm64.exe"
+    },
+    "7z.dll": {
+      "version": "26.00",
+      "sha256": "A575175338706D1473E2BEBE1CD811283C63C697A17C0865DE85EDE345898AF6",
+      "size": 1317376,
+      "architecture": "x86",
+      "source": "https://www.7-zip.org/a/7z2600.exe"
     }
-  },
-  "updated": "2025-12-31T15:26:28.5036133Z",
-  "version": "25.01"
+  }
 }
