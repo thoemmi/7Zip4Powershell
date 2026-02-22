@@ -7,7 +7,7 @@ on:
   workflow_dispatch:    # Allows manual triggering
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
@@ -47,12 +47,50 @@ jobs:
         $version = "${{ steps.gitversion.outputs.major }}.${{ steps.gitversion.outputs.minor }}.${{ steps.gitversion.outputs.patch }}"
         $prerelease = "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
         (((Get-Content $psd1File -Raw) -replace '\$version\$',$version) -replace '\$prerelease\$',$prerelease) | Set-Content $psd1File
-    
-    - name: Publish to PowerShell Gallery
-      if: startsWith(github.ref, 'refs/tags/v')
+
+    - name: Upload Module Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: module
+        path: Module/7Zip4Powershell
+
+  release:
+    needs: [build]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Download Module Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: module
+        path: Module/7Zip4Powershell
+
+    - name: Generate Release Notes
+      id: release_notes
       shell: pwsh
       run: |
-        Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY
+        $ErrorActionPreference = 'Stop'
+        $notes = gh api repos/${{ github.repository }}/releases/generate-notes `
+          -f tag_name=${{ github.ref_name }} `
+          --jq '.body'
+        if ([string]::IsNullOrWhiteSpace($notes)) { throw "Release notes generation returned empty content" }
+        $delimiter = [System.Guid]::NewGuid().ToString()
+        "notes<<$delimiter`n$notes`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+      env:
+        GH_TOKEN: ${{ github.token }}
+
+    - name: Publish to PowerShell Gallery
+      shell: pwsh
+      run: |
+        Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY -ReleaseNotes $env:RELEASE_NOTES
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        RELEASE_NOTES: ${{ steps.release_notes.outputs.notes }}
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        body: ${{ steps.release_notes.outputs.notes }}
         
