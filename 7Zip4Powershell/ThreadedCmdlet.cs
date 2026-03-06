@@ -34,15 +34,6 @@ namespace SevenZip4PowerShell {
             }
 
             _thread.Join();
-
-            try {
-                worker.Progress.StatusDescription = "Finished";
-                worker.Progress.RecordType = ProgressRecordType.Completed;
-                WriteProgress(worker.Progress);
-            } catch (NullReferenceException) {
-                // Possible bug in PowerShell 7.4.0 leading to a null reference exception being thrown on ProgressPane completion
-                // This is not happening on PowerShell 5.1
-            }
         }
 
         private static Thread StartBackgroundThread(CmdletWorker worker) {
