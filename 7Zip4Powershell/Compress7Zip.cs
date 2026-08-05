@@ -253,10 +253,14 @@ namespace SevenZip4PowerShell {
                     Progress.PercentComplete = args.PercentDone;
                     WriteProgress(Progress);
                 };
-
                 compressor.FileCompressionStarted += (sender, args) => {
                     currentStatus = $"Compressing {args.FileName}";
                     Write($"Compressing \"{args.FileName}\"");
+                };
+                compressor.CompressionFinished += (sender, args) => {
+                    Progress.StatusDescription = "Finished";
+                    Progress.RecordType = ProgressRecordType.Completed;
+                    WriteProgress(Progress);
                 };
 
                 if (directoryOrFiles.Any(path => new FileInfo(path).Exists)) {
