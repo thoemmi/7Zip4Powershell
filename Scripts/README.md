@@ -52,7 +52,7 @@ When run with `-CheckOnly`, the script sets output variables for GitHub Actions:
 - `update_available`: "true" or "false"
 - `new_version`: Version number if update is available
 
-These outputs are used by the automated workflow to determine if a PR should be created.
+These outputs are used by the automated workflow to create or update a PR on the fixed `update-7zip-libraries` branch. If a newer version is detected while that PR is still open, the same PR is updated with the latest DLLs, title, and description.
 
 ### Error Handling
 
@@ -131,7 +131,7 @@ To manually trigger the automated GitHub Actions workflow:
 4. Choose branch (usually `master`)
 5. Click **Run workflow** button
 
-The workflow will check for updates and create a PR if a new version is available.
+The workflow will check for updates and create or update the PR if a new version is available.
 
 ### Development Notes
 
