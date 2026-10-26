@@ -33,7 +33,7 @@ jobs:
         run: |
           .\Scripts\Update-7ZipDlls.ps1 -Update -Verbose
 
-      - name: Create Pull Request
+      - name: Create or update Pull Request
         if: steps.check.outputs.update_available == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
@@ -64,7 +64,8 @@ jobs:
 
             ## DLL Checksums
             The SHA256 checksums are documented in `Libs/7zip-version.json` for verification.
-          branch: update-7zip-${{ steps.check.outputs.new_version }}
+          # Reuse the open PR when a newer version becomes available.
+          branch: update-7zip-libraries
           delete-branch: true
           labels: |
             dependencies
