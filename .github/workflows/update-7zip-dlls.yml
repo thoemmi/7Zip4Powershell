@@ -8,11 +8,16 @@ on:
     # Allow manual trigger
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: update-7zip-libraries
+  cancel-in-progress: false
 
 jobs:
   check-and-update:
+    # Only trusted default-branch code may use the updater App credentials.
+    if: github.repository == 'thoemmi/7Zip4Powershell' && github.ref == 'refs/heads/master'
     runs-on: windows-latest
 
     steps:
@@ -20,6 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Check for 7-Zip updates
         id: check
@@ -30,14 +36,36 @@ jobs:
       - name: Download and extract updated DLLs
         if: steps.check.outputs.update_available == 'true'
         shell: pwsh
+        env:
+          NEW_VERSION: ${{ steps.check.outputs.new_version }}
         run: |
-          .\Scripts\Update-7ZipDlls.ps1 -Update -Verbose
+          .\Scripts\Update-7ZipDlls.ps1 -Update -TargetVersion $env:NEW_VERSION -Verbose
+
+      - name: Create updater App token
+        if: steps.check.outputs.update_available == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
+        with:
+          client-id: ${{ vars.SEVENZIP_UPDATER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SEVENZIP_UPDATER_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Create or update Pull Request
         if: steps.check.outputs.update_available == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # App-created PRs trigger PR Build without manual workflow approval.
+          token: ${{ steps.app-token.outputs.token }}
+          base: master
+          add-paths: |
+            Libs/7z.dll
+            Libs/7z64.dll
+            Libs/7zARM64.dll
+            Libs/License.txt
+            Libs/7zip-version.json
           commit-message: "Update 7-Zip libraries to ${{ steps.check.outputs.new_version }}"
           title: "Update 7-Zip libraries to ${{ steps.check.outputs.new_version }}"
           assignees: thoemmi
@@ -56,11 +84,9 @@ jobs:
             - [Download page](https://www.7-zip.org/download.html)
             - [7-Zip on SourceForge](https://sourceforge.net/projects/sevenzip/)
 
-            ## Verification Needed
-            Please verify the DLLs are valid by:
-            1. Building the project: `dotnet build --configuration Release`
-            2. Testing compression: `Compress-7Zip -Path test -ArchiveFileName test.7z`
-            3. Testing extraction: `Expand-7Zip -ArchiveFileName test.7z -TargetPath output`
+            ## Automated Verification
+            The PR Build workflow automatically builds the module in Release configuration and runs the Pester compression/extraction tests.
+            Review its result before merging this update.
 
             ## DLL Checksums
             The SHA256 checksums are documented in `Libs/7zip-version.json` for verification.
