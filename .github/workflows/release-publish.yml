@@ -10,21 +10,23 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 0  # Required for GitVersion
     
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
     
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v3.2.0
+      uses: gittools/actions/gitversion/setup@7417b1089e2c7de93510f1901d656ddf60bb024f # v4.7.0
       with:
         versionSpec: '6.2.x'
     
     - name: Determine Version
       id: gitversion
-      uses: gittools/actions/gitversion/execute@v3.2.0
+      uses: gittools/actions/gitversion/execute@7417b1089e2c7de93510f1901d656ddf60bb024f # v4.7.0
+      with:
+        configFilePath: GitVersion.yml
     
     - name: Restore dependencies
       run: dotnet restore
@@ -34,6 +36,8 @@ jobs:
     
     - name: Prepare Module
       shell: pwsh
+      env:
+        MODULE_PRERELEASE: ${{ steps.gitversion.outputs.preReleaseTag }}
       run: |
         # Create module folder
         $moduleTargetPath = Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell"
@@ -45,11 +49,13 @@ jobs:
         # Update version in PSD1
         $psd1File = Join-Path $moduleTargetPath "7Zip4PowerShell.psd1"
         $version = "${{ steps.gitversion.outputs.major }}.${{ steps.gitversion.outputs.minor }}.${{ steps.gitversion.outputs.patch }}"
-        $prerelease = "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
+        # PowerShell Gallery requires a SemVer 1 suffix (e.g. beta1, not beta.1).
+        $prerelease = $env:MODULE_PRERELEASE -replace '\.', ''
         (((Get-Content $psd1File -Raw) -replace '\$version\$',$version) -replace '\$prerelease\$',$prerelease) | Set-Content $psd1File
+        Test-ModuleManifest -Path $psd1File -ErrorAction Stop | Out-Null
 
     - name: Upload Module Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: module
         path: Module/7Zip4Powershell
@@ -62,7 +68,7 @@ jobs:
       contents: write
     steps:
     - name: Download Module Artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: module
         path: Module/7Zip4Powershell
@@ -108,6 +114,6 @@ jobs:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
       with:
         body_path: release-notes.md

@@ -8,20 +8,22 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 0  # Required for GitVersion
     
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
     
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v3.2.0
+      uses: gittools/actions/gitversion/setup@7417b1089e2c7de93510f1901d656ddf60bb024f # v4.7.0
       with:
         versionSpec: '6.2.x'
     
     - name: Determine Version
-      uses: gittools/actions/gitversion/execute@v3.2.0
+      uses: gittools/actions/gitversion/execute@7417b1089e2c7de93510f1901d656ddf60bb024f # v4.7.0
+      with:
+        configFilePath: GitVersion.yml
     
     - name: Restore dependencies
       run: dotnet restore
