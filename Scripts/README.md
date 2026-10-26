@@ -54,6 +54,26 @@ When run with `-CheckOnly`, the script sets output variables for GitHub Actions:
 
 These outputs are used by the automated workflow to create or update a PR on the fixed `update-7zip-libraries` branch. If a newer version is detected while that PR is still open, the same PR is updated with the latest DLLs, title, and description.
 
+### Automatic PR Checks and GitHub App Setup
+
+The updater uses a dedicated GitHub App installation token to create or update its PR, so the existing `PR Build` workflow starts automatically. PRs created with `GITHUB_TOKEN` require manual workflow approval; see [GitHub's token documentation](https://docs.github.com/en/actions/concepts/security/github_token#when-github_token-triggers-workflow-runs).
+
+Set up the App before enabling this change on `master`:
+
+1. [Register a GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app) under the repository owner's account, for example `7Zip4Powershell Updater`. Use the repository URL as its homepage, disable webhooks, and allow installation only on this account.
+2. Grant only the repository permissions **Contents: Read and write** and **Pull requests: Read and write**. Metadata read access is implicit. No Actions, Workflows, or administration permissions are needed.
+3. Install the App on **only `thoemmi/7Zip4Powershell`**.
+4. In the repository's **Settings → Secrets and variables → Actions**, add the App's **Client ID** as the repository variable `SEVENZIP_UPDATER_APP_CLIENT_ID`.
+5. Generate a private key in the App settings and store the complete PEM file as the repository secret `SEVENZIP_UPDATER_APP_PRIVATE_KEY`. Never commit it or paste it into a PR.
+
+The automation is limited to the existing scheduled/manual update detector on `master` in this repository. Manual runs on other branches are skipped. An App token is requested only after a newer version has been detected and that exact version has been downloaded successfully. The token is limited to this repository and the two permissions above, and is revoked when the job finishes. Without a new version, the workflow does not request a token or create a PR; if App configuration is missing when an update is found, the run fails rather than falling back to `GITHUB_TOKEN`.
+
+The PR action stages only the three DLLs, `License.txt`, and `7zip-version.json` in `Libs/`. Runs are serialized to avoid concurrent changes to the shared update branch. The token's Contents permission is repository-wide; the file restriction is enforced by the workflow's `add-paths` list, not by GitHub's permission model.
+
+`PR Build` retains its normal `pull_request` trigger, uses a read-only token, and does not receive the App key. No workflow automatically approves arbitrary bot or fork PRs. App-created update PRs use the same Release build and Pester tests as other PRs; successful checks do not merge or publish a release.
+
+To verify the setup, run **Update 7-Zip DLLs** on `master` when a newer release is available. Confirm that the PR is created by the dedicated App and that **PR Build → build** starts without an approval prompt. A no-update run verifies detection only, not the App configuration or automatic PR checks.
+
 ### Error Handling
 
 The script includes comprehensive error handling:
