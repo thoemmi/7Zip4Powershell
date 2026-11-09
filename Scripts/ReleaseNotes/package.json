@@ -1,0 +1,9 @@
+{
+  "name": "7zip4powershell-release-notes",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "html-to-text": "10.0.1",
+    "marked": "18.1.3"
+  }
+}

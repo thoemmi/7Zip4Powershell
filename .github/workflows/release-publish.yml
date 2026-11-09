@@ -67,6 +67,10 @@ jobs:
     permissions:
       contents: write
     steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+
     - name: Download Module Artifact
       uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
@@ -85,31 +89,16 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
 
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      with:
+        node-version: '24'
+
+    - name: Install Release Notes Dependencies
+      working-directory: Scripts/ReleaseNotes
+      run: npm ci
+
     - name: Prepare Release Notes for PowerShell Gallery
-      shell: pwsh
-      run: |
-        $ErrorActionPreference = 'Stop'
-        $notes = Get-Content -Path "release-notes.md" -Raw -ErrorAction Stop
-        # GitHub generates Markdown; the Gallery displays this field as plain text.
-        # Protect inline code before processing formatting within the surrounding text.
-        $codeSpans = [System.Collections.Generic.List[string]]::new()
-        $placeholderPrefix = "CODE$([guid]::NewGuid().ToString('N'))"
-        $notes = [regex]::Replace($notes, '(?s)(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)', {
-          param($match)
-          $placeholder = "${placeholderPrefix}$($codeSpans.Count)END"
-          $codeSpans.Add($match.Groups[2].Value)
-          return $placeholder
-        })
-        $notes = $notes -replace '(?s)<!--.*?-->', ''
-        $notes = $notes -replace '(?m)^ {0,3}#{1,6}[ \t]+', ''
-        $notes = $notes -replace '\[([^\]]+)\]\((https?://[^)\s]+)\)', '$1 ($2)'
-        $notes = $notes -replace '\*\*(.+?)\*\*', '$1'
-        $notes = $notes.Trim()
-        for ($i = 0; $i -lt $codeSpans.Count; $i++) {
-          $notes = $notes.Replace("${placeholderPrefix}${i}END", $codeSpans[$i])
-        }
-        if ([string]::IsNullOrWhiteSpace($notes)) { throw "Plain-text release notes are empty" }
-        Set-Content -Path "release-notes.txt" -Value $notes -Encoding utf8 -NoNewline
+      run: node Scripts/ReleaseNotes/convert.mjs release-notes.md release-notes.txt
 
     - name: Add Release Notes to Module Manifest
       shell: pwsh
