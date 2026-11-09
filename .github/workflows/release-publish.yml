@@ -85,12 +85,27 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
 
+    - name: Prepare Release Notes for PowerShell Gallery
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        $notes = Get-Content -Path "release-notes.md" -Raw -ErrorAction Stop
+        # GitHub generates Markdown; the Gallery displays this field as plain text.
+        $notes = $notes -replace '(?s)<!--.*?-->', ''
+        $notes = $notes -replace '(?m)^ {0,3}#{1,6}[ \t]+', ''
+        $notes = $notes -replace '\[([^\]]+)\]\((https?://[^)\s]+)\)', '$1 ($2)'
+        $notes = $notes -replace '\*\*(.+?)\*\*', '$1'
+        $notes = $notes -replace '`([^`\r\n]+)`', '$1'
+        $notes = $notes.Trim()
+        if ([string]::IsNullOrWhiteSpace($notes)) { throw "Plain-text release notes are empty" }
+        Set-Content -Path "release-notes.txt" -Value $notes -Encoding utf8 -NoNewline
+
     - name: Add Release Notes to Module Manifest
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
-        $releaseNotes = Get-Content -Path "release-notes.md" -Raw -ErrorAction Stop
-        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.md' is empty or whitespace-only" }
+        $releaseNotes = Get-Content -Path "release-notes.txt" -Raw -ErrorAction Stop
+        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.txt' is empty or whitespace-only" }
 
         $psd1File = Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell" "7Zip4Powershell.psd1"
         $manifest = Get-Content -Path $psd1File -Raw -ErrorAction Stop
@@ -107,8 +122,8 @@ jobs:
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
-        $releaseNotes = Get-Content -Path "release-notes.md" -Raw -ErrorAction Stop
-        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.md' is empty or whitespace-only" }
+        $releaseNotes = Get-Content -Path "release-notes.txt" -Raw -ErrorAction Stop
+        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.txt' is empty or whitespace-only" }
         Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY -ReleaseNotes $releaseNotes
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
