@@ -67,6 +67,10 @@ jobs:
     permissions:
       contents: write
     steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+
     - name: Download Module Artifact
       uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
@@ -85,12 +89,23 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
 
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      with:
+        node-version: '24'
+
+    - name: Install Release Notes Dependencies
+      working-directory: Scripts/ReleaseNotes
+      run: npm ci
+
+    - name: Prepare Release Notes for PowerShell Gallery
+      run: node Scripts/ReleaseNotes/convert.mjs release-notes.md release-notes.txt
+
     - name: Add Release Notes to Module Manifest
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
-        $releaseNotes = Get-Content -Path "release-notes.md" -Raw -ErrorAction Stop
-        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.md' is empty or whitespace-only" }
+        $releaseNotes = Get-Content -Path "release-notes.txt" -Raw -ErrorAction Stop
+        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.txt' is empty or whitespace-only" }
 
         $psd1File = Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell" "7Zip4Powershell.psd1"
         $manifest = Get-Content -Path $psd1File -Raw -ErrorAction Stop
@@ -107,8 +122,8 @@ jobs:
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
-        $releaseNotes = Get-Content -Path "release-notes.md" -Raw -ErrorAction Stop
-        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.md' is empty or whitespace-only" }
+        $releaseNotes = Get-Content -Path "release-notes.txt" -Raw -ErrorAction Stop
+        if ([string]::IsNullOrWhiteSpace($releaseNotes)) { throw "Release notes file 'release-notes.txt' is empty or whitespace-only" }
         Publish-Module -Path (Join-Path $env:GITHUB_WORKSPACE "Module" "7Zip4Powershell") -NuGetApiKey $env:NUGET_API_KEY -ReleaseNotes $releaseNotes
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}

@@ -19,3 +19,6 @@ Scripts/downloads/
 
 # Test data (auto-generated)
 Tests/TestData/
+
+# Release notes converter dependencies
+Scripts/ReleaseNotes/node_modules/
