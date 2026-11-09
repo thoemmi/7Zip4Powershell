@@ -91,12 +91,23 @@ jobs:
         $ErrorActionPreference = 'Stop'
         $notes = Get-Content -Path "release-notes.md" -Raw -ErrorAction Stop
         # GitHub generates Markdown; the Gallery displays this field as plain text.
+        # Protect inline code before processing formatting within the surrounding text.
+        $codeSpans = [System.Collections.Generic.List[string]]::new()
+        $placeholderPrefix = "CODE$([guid]::NewGuid().ToString('N'))"
+        $notes = [regex]::Replace($notes, '(?s)(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)', {
+          param($match)
+          $placeholder = "${placeholderPrefix}$($codeSpans.Count)END"
+          $codeSpans.Add($match.Groups[2].Value)
+          return $placeholder
+        })
         $notes = $notes -replace '(?s)<!--.*?-->', ''
         $notes = $notes -replace '(?m)^ {0,3}#{1,6}[ \t]+', ''
         $notes = $notes -replace '\[([^\]]+)\]\((https?://[^)\s]+)\)', '$1 ($2)'
         $notes = $notes -replace '\*\*(.+?)\*\*', '$1'
-        $notes = $notes -replace '`([^`\r\n]+)`', '$1'
         $notes = $notes.Trim()
+        for ($i = 0; $i -lt $codeSpans.Count; $i++) {
+          $notes = $notes.Replace("${placeholderPrefix}${i}END", $codeSpans[$i])
+        }
         if ([string]::IsNullOrWhiteSpace($notes)) { throw "Plain-text release notes are empty" }
         Set-Content -Path "release-notes.txt" -Value $notes -Encoding utf8 -NoNewline
 
